@@ -1,3 +1,4 @@
+import math
 from random import randrange
 
 
@@ -40,6 +41,7 @@ print(treasure.XY)
 print(mechanic.XY)
 #####
 
+
 class comments:
     __slots__ = [
         "wallComments",
@@ -54,7 +56,7 @@ class comments:
             "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
         self.moveComments = ["filler"]
         self.fightComments = ["filler"]
-        self.compassComments = [""]#maybe no compass comments maybe some? likely distance influenced
+        self.compassComments = [""]#maybe no compass comments, maybe some? likely distance influenced
     def commentPrint(self, target: list) -> str:
         length = len(target)
         comment = target[randrange(length)]
@@ -180,7 +182,23 @@ def fight():
         return
 
 def closestObject() -> list:
-   pass 
+    #Finding distances
+    distMechanic = distFinder(mechanic.XY)
+    distTreasure = distFinder(treasure.XY)
+    #Storing distances
+    distDict = {
+        "mechanic" : distMechanic,
+        "treasure" : treasureMechanic}
+    distMin = min(distDict.values())#WORKING HERE
+
+def distFinder(target: list) -> float:
+    sideDist = lambda point, player: abs((player - point))
+    a = sideDist(target[0], player.XY[0])
+    b = sideDist(target[1], player.XY[1])
+    a = pow(a, 2)
+    b = pow(b, 2)
+    c = a + b
+    return math.sqrt(c)
 
 def compass(target: list):
     if (player.XY == target):
