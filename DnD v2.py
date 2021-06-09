@@ -40,7 +40,6 @@ print(treasure.XY)
 print(mechanic.XY)
 #####
 
-
 class comments:
     __slots__ = [
         "wallComments",
@@ -48,11 +47,23 @@ class comments:
         "fightComments",
         "compassComments"]
     def __init__(self):
-        self.wallComments = ["filler"]
+        self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
+            "A large wall blocks your path...",
+            "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
+            "A tiny ledge is in your path. You could jump over it, but this world is 2d. Turn back 2d person...",
+            "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
         self.moveComments = ["filler"]
         self.fightComments = ["filler"]
-        self.compassComments = ["filler"]
-        
+        self.compassComments = [""]#maybe no compass comments maybe some? likely distance influenced
+    def commentPrint(self, target: list) -> str:
+        length = len(target)
+        comment = target[randrange(length)]
+        return comment
+    def compassPrint(self, compassTarget: list):
+        pass #for now
+
+comment = comments()
+  
 
 
 def move(XY: list) -> int:
@@ -92,6 +103,7 @@ def move(XY: list) -> int:
         help()
         return XY
     elif (direction == "c"): #Maybe make so it points to closest object?
+        #func for closest object
         compass(mechanic.XY)
         return XY
     elif (direction == "exit"):
@@ -104,16 +116,15 @@ def move(XY: list) -> int:
 
 def borderMechanic(XY: int):
     if (XY > 10):
-        print("\n\nYou have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.\n")
+        print("\n",comment.commentPrint(comment.wallComments),"\n")
         return XY - 1
     elif (XY < 0):
-        print("\n\nYou have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.\n")
+        print("\n",comment.commentPrint(comment.wallComments),"\n")
         return XY + 1
     else:
         return XY
 
 def encounterMechanic():
-    # player.XY
     print("You have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
     while (action == "f"):
@@ -129,7 +140,6 @@ def encounterMechanic():
             player.XY = move(player.XY)
 
 def encounterTreasure():
-    # player.XY
     print("You have found a treasure chest\n")
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
@@ -169,8 +179,10 @@ def fight():
         player.died()
         return
 
+def closestObject() -> list:
+   pass 
+
 def compass(target: list):
-    # player.XY
     if (player.XY == target):
         print("\nThe Compass is spinning, you have arrived. The destination is on your right...\n")
         return
@@ -209,8 +221,8 @@ def help():
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 def showCoords():
-    # player.XY
     print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+    #PUT A COMMENT FUNC HERE
 
 def welcomePrints():
     print("Welcome to [insert game name]\n")
