@@ -188,8 +188,9 @@ def closestObject() -> list:
     #Storing distances
     distDict = {
         "mechanic" : distMechanic,
-        "treasure" : treasureMechanic}
-    distMin = min(distDict.values())#WORKING HERE
+        "treasure" : distTreasure}
+    distMin = min(distDict)#returns name of value
+    #maybe use if/elif ladder to return the value of closest object
 
 def distFinder(target: list) -> float:
     sideDist = lambda point, player: abs((player - point))
