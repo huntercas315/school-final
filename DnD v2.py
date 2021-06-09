@@ -9,14 +9,15 @@ class stats:
             "attackMax",
             "XY",
             "upgrades"]
-    def __init__(self, health, attackMin, attackMax):
+    def __init__(self, health: int, attackMin: int, attackMax: int):
         self.health = health
         self.originHealth = health
         self.attackMin = attackMin
         self.attackMax = attackMax
         self.XY = [randrange(10)+1, randrange(10)+1]
+        #XY[0] is X, XY[1] is Y
         self.upgrades = ["health", "attack"]
-    def attack(self, target):
+    def attack(self, target) -> int:
         target -= randrange(self.attackMin, self.attackMax)+1
         return target
     def died(self):
@@ -25,10 +26,9 @@ class stats:
     def upgrade(self):
         option = self.upgrades[randrange(1)]
         if (option == "health"):
-            pass #may use to add weapons or armor
+            pass #may use to add weapons or armor?
         elif (option == "attack"):
             pass
-
 
 player = stats(10, 0, 3)
 mechanic = stats(5, 0, 2)
@@ -36,11 +36,26 @@ treasure = stats(0, 0, 0)
 
 
 #####
+print(treasure.XY)
 print(mechanic.XY)
 #####
 
 
-def move(XY: list):
+class comments:
+    __slots__ = [
+        "wallComments",
+        "moveComments",
+        "fightComments",
+        "compassComments"]
+    def __init__(self):
+        self.wallComments = ["filler"]
+        self.moveComments = ["filler"]
+        self.fightComments = ["filler"]
+        self.compassComments = ["filler"]
+        
+
+
+def move(XY: list) -> int:
     direction = str(input("What Action? Use (help) to view tips: "))
     if (direction == "w"):
         temp = XY[1]+1
@@ -76,7 +91,7 @@ def move(XY: list):
     elif (direction == "help"):
         help()
         return XY
-    elif (direction == "c"):
+    elif (direction == "c"): #Maybe make so it points to closest object?
         compass(mechanic.XY)
         return XY
     elif (direction == "exit"):
@@ -87,7 +102,7 @@ def move(XY: list):
         help()
         return XY
 
-def borderMechanic(XY):
+def borderMechanic(XY: int):
     if (XY > 10):
         print("\n\nYou have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.\n")
         return XY - 1
@@ -118,6 +133,7 @@ def encounterTreasure():
     print("You have found a treasure chest\n")
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
+        treasure.died()
         pass
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
@@ -206,8 +222,9 @@ def encounterCheck():
     elif (player.XY == treasure.XY):
         encounterTreasure()
 
-#The Starting Parts
 
+
+#The Starting Parts
 quitCheck = False
 
 welcomePrints()
