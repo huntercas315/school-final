@@ -1,3 +1,4 @@
+import math
 from random import randrange
 
 
@@ -9,14 +10,15 @@ class stats:
             "attackMax",
             "XY",
             "upgrades"]
-    def __init__(self, health, attackMin, attackMax):
+    def __init__(self, health: int, attackMin: int, attackMax: int):
         self.health = health
         self.originHealth = health
         self.attackMin = attackMin
         self.attackMax = attackMax
         self.XY = [randrange(10)+1, randrange(10)+1]
+        #XY[0] is X, XY[1] is Y
         self.upgrades = ["health", "attack"]
-    def attack(self, target):
+    def attack(self, target) -> int:
         target -= randrange(self.attackMin, self.attackMax)+1
         return target
     def died(self):
@@ -25,10 +27,9 @@ class stats:
     def upgrade(self):
         option = self.upgrades[randrange(1)]
         if (option == "health"):
-            pass #may use to add weapons or armor
+            pass #may use to add weapons or armor?
         elif (option == "attack"):
             pass
-
 
 player = stats(10, 0, 3)
 mechanic = stats(5, 0, 2)
@@ -36,11 +37,38 @@ treasure = stats(0, 0, 0)
 
 
 #####
+print(treasure.XY)
 print(mechanic.XY)
 #####
 
 
-def move(XY: list):
+class comments:
+    __slots__ = [
+        "wallComments",
+        "moveComments",
+        "fightComments",
+        "compassComments"]
+    def __init__(self):
+        self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
+            "A large wall blocks your path...",
+            "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
+            "A tiny ledge is in your path. You could jump over it, but this world is 2d. Turn back 2d person...",
+            "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
+        self.moveComments = ["filler"]
+        self.fightComments = ["filler"]
+        self.compassComments = [""]#maybe no compass comments, maybe some? likely distance influenced
+    def commentPrint(self, target: list) -> str:
+        length = len(target)
+        comment = target[randrange(length)]
+        return comment
+    def compassPrint(self, compassTarget: list):
+        pass #for now
+
+comment = comments()
+  
+
+
+def move(XY: list) -> int:
     direction = str(input("What Action? Use (help) to view tips: "))
     if (direction == "w"):
         temp = XY[1]+1
@@ -76,7 +104,8 @@ def move(XY: list):
     elif (direction == "help"):
         help()
         return XY
-    elif (direction == "c"):
+    elif (direction == "c"): #Maybe make so it points to closest object?
+        #func for closest object
         compass(mechanic.XY)
         return XY
     elif (direction == "exit"):
@@ -87,18 +116,17 @@ def move(XY: list):
         help()
         return XY
 
-def borderMechanic(XY):
+def borderMechanic(XY: int):
     if (XY > 10):
-        print("\n\nYou have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.\n")
+        print("\n",comment.commentPrint(comment.wallComments),"\n")
         return XY - 1
     elif (XY < 0):
-        print("\n\nYou have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.\n")
+        print("\n",comment.commentPrint(comment.wallComments),"\n")
         return XY + 1
     else:
         return XY
 
 def encounterMechanic():
-    # player.XY
     print("You have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
     while (action == "f"):
@@ -114,10 +142,10 @@ def encounterMechanic():
             player.XY = move(player.XY)
 
 def encounterTreasure():
-    # player.XY
     print("You have found a treasure chest\n")
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
+        treasure.died()
         pass
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
@@ -153,8 +181,27 @@ def fight():
         player.died()
         return
 
+def closestObject() -> list:
+    #Finding distances
+    distMechanic = distFinder(mechanic.XY)
+    distTreasure = distFinder(treasure.XY)
+    #Storing distances
+    distDict = {
+        "mechanic" : distMechanic,
+        "treasure" : distTreasure}
+    distMin = min(distDict)#returns name of value
+    #maybe use if/elif ladder to return the value of closest object
+
+def distFinder(target: list) -> float:
+    sideDist = lambda point, player: abs((player - point))
+    a = sideDist(target[0], player.XY[0])
+    b = sideDist(target[1], player.XY[1])
+    a = pow(a, 2)
+    b = pow(b, 2)
+    c = a + b
+    return math.sqrt(c)
+
 def compass(target: list):
-    # player.XY
     if (player.XY == target):
         print("\nThe Compass is spinning, you have arrived. The destination is on your right...\n")
         return
@@ -193,8 +240,8 @@ def help():
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 def showCoords():
-    # player.XY
     print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+    #PUT A COMMENT FUNC HERE
 
 def welcomePrints():
     print("Welcome to [insert game name]\n")
@@ -206,8 +253,9 @@ def encounterCheck():
     elif (player.XY == treasure.XY):
         encounterTreasure()
 
-#The Starting Parts
 
+
+#The Starting Parts
 quitCheck = False
 
 welcomePrints()
