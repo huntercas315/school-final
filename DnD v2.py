@@ -1,4 +1,3 @@
-import math
 from random import randrange
 
 
@@ -24,7 +23,7 @@ class stats:
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth
     def upgrade(self):
-        option = upgrades[randrange(1)]
+        option = self.upgrades[randrange(1)]
         if (option == "health"):
             pass #may use to add weapons or armor
         elif (option == "attack"):
@@ -99,7 +98,7 @@ def borderMechanic(XY):
         return XY
 
 def encounterMechanic():
-    player.XY
+    # player.XY
     print("You have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
     while (action == "f"):
@@ -115,7 +114,7 @@ def encounterMechanic():
             player.XY = move(player.XY)
 
 def encounterTreasure():
-    player.XY
+    # player.XY
     print("You have found a treasure chest\n")
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
@@ -155,7 +154,7 @@ def fight():
         return
 
 def compass(target: list):
-    player.XY
+    # player.XY
     if (player.XY == target):
         print("\nThe Compass is spinning, you have arrived. The destination is on your right...\n")
         return
@@ -194,7 +193,7 @@ def help():
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 def showCoords():
-    player.XY
+    # player.XY
     print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
 
 def welcomePrints():
