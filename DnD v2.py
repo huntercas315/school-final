@@ -82,7 +82,9 @@ class map:
             if (i+1 == self.treasure[1]):
                 self.digits.pop(self.treasure[0]-1)
                 self.digits.insert(self.treasure[0]-1, "[?]")
-            print()
+            #put printing digits here. needs to be self.digits
+            print(line.format(self.digits[0], self.digits[1], self.digits[2], self.digits[3], self.digits[4], self.digits[5], self.digits[6], self.digits[7], self.digits[8], self.digits[9]))
+
             
 
 def move(XY: list) -> int:
