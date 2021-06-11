@@ -63,27 +63,52 @@ class comments:
 
 comment = comments()
 
-class map:
+class mapStuff:
     __slots__ = [
         "digits",
+        "lineFormat",
         "mechanic",
         "treasure"]
     def __init__(self):
-        self.digits = ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"]
+        self.digits = {
+            "line0" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line1" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line2" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line3" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line4" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line5" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line6" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line7" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line8" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line9" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
+            "line10": ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],}
+        self.lineFormat = "|{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}|"
         self.mechanic = [-1,-1]
         self.treasure = [-1,-1]
     def drawMap(self):
+        iteranator = iter(self.digits.values())
         print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        for i in range(10):
-            self.digits = ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"]
-            if (i+1 == self.mechanic[1]):
-                self.digits.pop(self.mechanic[0]-1)
-                self.digits.insert(self.mechanic[0]-1, "[!]")
-            if (i+1 == self.treasure[1]):
-                self.digits.pop(self.treasure[0]-1)
-                self.digits.insert(self.treasure[0]-1, "[?]")
-            #put printing digits here. needs to be self.digits
-            print(line.format(self.digits[0], self.digits[1], self.digits[2], self.digits[3], self.digits[4], self.digits[5], self.digits[6], self.digits[7], self.digits[8], self.digits[9]))
+        for i in range(len(self.digits.values())):
+            line = next(iteranator)
+            if (self.coordSwap(self.mechanic[1]) == i):
+                self.lineEdit(line, self.coordSwap(self.mechanic[0]), "[!]")
+            if (self.coordSwap(self.treasure[1]) == i):
+                self.lineEdit(line, self.coordSwap(self.treasure[0]), "[X]")
+            if (self.coordSwap(player.XY[1]) == i):
+                self.lineEdit(line, self.coordSwap(player.XY[0]), "[@]")
+            print(self.lineFormat.format(line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10]))
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+    def lineEdit(self, currentLine: list, point: int, character: str) -> list:
+        currentLine[point] = character
+        return currentLine
+    def coordSwap(self, coord: int) -> int:
+        if (coord == 0):
+            return 10
+        coord = abs(10 - coord) - 1
+        return coord
+
+maps = mapStuff()
+
 
             
 
@@ -125,6 +150,9 @@ def move(XY: list) -> int:
         return XY
     elif (direction == "c"): #Maybe make so it points to closest object?
         compassAllFunc()
+        return XY
+    elif (direction == "map"):
+        maps.drawMap()
         return XY
     elif (direction == "exit"):
         global quitCheck
