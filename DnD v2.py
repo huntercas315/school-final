@@ -66,46 +66,35 @@ comment = comments()
 class mapStuff:
     __slots__ = [
         "digits",
-        "lineFormat",
         "mechanic",
         "treasure"]
     def __init__(self):
-        self.digits = {
-            "line0" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line1" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line2" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line3" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line4" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line5" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line6" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line7" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line8" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line9" : ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],
-            "line10": ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"],}
-        self.lineFormat = "|{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}|"
+        self.digits = []
         self.mechanic = [-1,-1]
         self.treasure = [-1,-1]
     def drawMap(self):
-        iteranator = iter(self.digits.values())
-        print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        for i in range(len(self.digits.values())):
-            line = next(iteranator)
-            if (self.coordSwap(self.mechanic[1]) == i):
-                self.lineEdit(line, self.coordSwap(self.mechanic[0]), "[!]")
-            if (self.coordSwap(self.treasure[1]) == i):
-                self.lineEdit(line, self.coordSwap(self.treasure[0]), "[X]")
-            if (self.coordSwap(player.XY[1]) == i):
-                self.lineEdit(line, self.coordSwap(player.XY[0]), "[@]")
-            print(self.lineFormat.format(line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10]))
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
-    def lineEdit(self, currentLine: list, point: int, character: str) -> list:
-        currentLine[point] = character
-        return currentLine
-    def coordSwap(self, coord: int) -> int:
-        if (coord == 0):
-            return 10
-        coord = abs(10 - coord) - 1
-        return coord
+        self.digits = []
+        self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+        for i in range(11):
+            digitTemp = ["|"]
+            for e in range(11):
+                if (player.XY[1] == i and player.XY[0] == e):
+                    digitTemp.append("[@]")
+                elif (self.treasure[1] == i and self.treasure[0] == e):
+                    digitTemp.append("[=]")
+                elif (self.mechanic[1] == i and self.mechanic[0] == e):
+                    digitTemp.append("[!]")
+                else:
+                    digitTemp.append("[_]")
+            digitTemp.append("|")
+            self.digits.append(digitTemp)
+        self.digits.append("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        self.digits.reverse()
+        for z in self.digits:
+            lineString = ""
+            for u in z:
+                lineString += u
+            print(lineString)
 
 maps = mapStuff()
 
@@ -148,7 +137,7 @@ def move(XY: list) -> int:
     elif (direction == "help"):
         help()
         return XY
-    elif (direction == "c"): #Maybe make so it points to closest object?
+    elif (direction == "c"):
         compassAllFunc()
         return XY
     elif (direction == "map"):
@@ -174,6 +163,7 @@ def borderMechanic(XY: int) -> int:
 
 def encounterMechanic() -> None:
     print("You have found a wild 'Game Mechanic' in it's natural habitat, a game.")
+    maps.mechanic = mechanic.XY
     action = "f"
     while (action == "f"):
         action = str(input("What will you do? (f)ight or (r)un: "))
@@ -189,8 +179,12 @@ def encounterMechanic() -> None:
 
 def encounterTreasure() -> None:
     print("You have found a treasure chest\n")
+    maps.treasure = treasure.XY
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
+        ####
+        print("Incomplete mechanic, come back later...")
+        #####
         treasure.died()
         pass #NEEDS A TREASURE MECHANIC
     else:
