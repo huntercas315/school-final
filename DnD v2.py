@@ -35,8 +35,13 @@ player = stats(10, 0, 3)
 mechanic = stats(5, 0, 2)
 treasure = stats(0, 0, 0)
 
+while (player.XY is mechanic.XY):
+    mechanic.XY = [randrange(10)+1, randrange(10)+1]
+while (player.XY is treasure.XY):
+    treasure.XY = [randrange(10)+1, randrange(10)+1]
 
-#####
+
+##### Beta stuff
 print(treasure.XY)
 print(mechanic.XY)
 #####
@@ -74,7 +79,7 @@ class mapStuff:
         self.treasure = [-1,-1]
     def drawMap(self):
         self.digits = []
-        self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+        self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         for i in range(11):
             digitTemp = ["|"]
             for e in range(11):
@@ -88,7 +93,7 @@ class mapStuff:
                     digitTemp.append("[_]")
             digitTemp.append("|")
             self.digits.append(digitTemp)
-        self.digits.append("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        self.digits.append("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         self.digits.reverse()
         for z in self.digits:
             lineString = ""
@@ -97,11 +102,14 @@ class mapStuff:
             print(lineString)
 
 maps = mapStuff()
+#add maps to movement coord message, create func to check if on an encounter coord using a bool to prevent using map during an encounter
 
 
-            
+
+showMap = False     
 
 def move(XY: list) -> int:
+    global showMap
     direction = str(input("What Action? Use (help) to view tips: "))
     if (direction == "w"):
         temp = XY[1]+1
@@ -140,8 +148,16 @@ def move(XY: list) -> int:
     elif (direction == "c"):
         compassAllFunc()
         return XY
-    elif (direction == "map"):
+    elif (direction == "m"):
         maps.drawMap()
+        return XY
+    elif (direction == "map"):
+        if showMap:
+            showMap = False
+            print("\nThe map has been turned off.\n")
+        else:
+            showMap = True
+            print("\nThe map has been turned on.\n")
         return XY
     elif (direction == "exit"):
         global quitCheck
@@ -186,6 +202,7 @@ def encounterTreasure() -> None:
         print("Incomplete mechanic, come back later...")
         #####
         treasure.died()
+        maps.treasure = [-1,-1]
         pass #NEEDS A TREASURE MECHANIC
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
@@ -280,7 +297,9 @@ def help() -> None:
     print("Movement Instructions:\n")
     print("Use (w),(a),(s),(d) to move North, West, South, and East,")
     print("Use (h) to view your health,")
-    print("Use (c) to use the compass and find nearby objects.\n")
+    print("Use (c) to use the compass and find nearby objects,")
+    print("Use (m) to view the map,")
+    print("Use (map) to toggle viewing the map when moving.\n")
     #add general move() instructions above
     print("Encounter Instructions:\n")
     print("Use (f) to fight an encountered Game Mechanic,")
@@ -291,19 +310,31 @@ def help() -> None:
     print("Use (exit) to exit the game.")
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
-def showCoords() -> None:
-    print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+def showCoords() -> None: #Informs the player of their location after movement
+    if showMap:
+        maps.drawMap()
+        print(f"You are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+    else:
+        print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
     #PUT A COMMENT FUNC HERE
 
-def welcomePrints() -> None:
+def welcomePrints() -> None: 
     print("Welcome to [insert game name]\n")
     showCoords()
 
-def encounterCheck() -> None:
+def encounterCheck() -> None: #Triggers events
     if (player.XY == mechanic.XY):
         encounterMechanic()
     elif (player.XY == treasure.XY):
         encounterTreasure()
+
+def encounterCheck() -> bool: #This is for disabling displaying coords and the map
+    if (player.XY == mechanic.XY):
+        return True
+    elif (player.XY == treasure.XY):
+        return True
+    else:
+        return False
 
 
 
