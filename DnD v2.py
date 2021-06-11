@@ -159,6 +159,9 @@ def move(XY: list) -> int:
             showMap = True
             print("\nThe map has been turned on.\n")
         return XY
+    elif (direction == "stats"):
+        statViewer()
+        return XY
     elif (direction == "exit"):
         global quitCheck
         quitCheck = True
@@ -291,6 +294,18 @@ def compass(target: list) -> None:
     #Direction Creation
     compass = yCompass+xCompass
     print(f"\nThe Compass is pointing {compass}.\n")
+
+def statViewer():
+    print()
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("Stats:")
+    print(f"    Health: {player.health}/{player.originHealth}")
+    print(f"    Attack: {player.attackMin+1}-{player.attackMax}")
+    print(f"    X: {player.XY[0]}")
+    print(f"    Y: {player.XY[1]}")
+##    print()
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print()
 
 def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
