@@ -103,8 +103,7 @@ class mapStuff:
 
 maps = mapStuff()
 
-
-showMap = False     
+     
 
 def move(XY: list) -> int:
     global showMap
@@ -354,6 +353,7 @@ def encounterCheckBool() -> bool: #This is for disabling displaying coords and t
 
 #The Starting Parts
 quitCheck = False
+showMap = False
 
 welcomePrints()
 while True:
