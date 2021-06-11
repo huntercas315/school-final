@@ -293,7 +293,7 @@ def compass(target: list) -> None:
     compass = yCompass+xCompass
     print(f"\nThe Compass is pointing {compass}.\n")
 
-def statViewer():
+def statViewer() -> None:
     print()
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Stats:")
@@ -301,7 +301,6 @@ def statViewer():
     print(f"    Attack: {player.attackMin+1}-{player.attackMax}")
     print(f"    X: {player.XY[0]}")
     print(f"    Y: {player.XY[1]}")
-##    print()
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print()
 
