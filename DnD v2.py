@@ -56,17 +56,36 @@ class comments:
             "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
         self.moveComments = ["filler"]
         self.fightComments = ["filler"]
-        self.compassComments = [""]#maybe no compass comments, maybe some? likely distance influenced
     def commentPrint(self, target: list) -> str:
         length = len(target)
         comment = target[randrange(length)]
         return comment
-    def compassPrint(self, compassTarget: list):
-        pass #for now
 
 comment = comments()
-  
 
+class map:
+    __slots__ = [
+        "digits",
+        "mechanic",
+        "treasure"]
+    def __init__(self):
+        self.digits = ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"]
+        self.mechanic = [-1,-1]
+        self.treasure = [-1,-1]
+    def drawMap(self):
+        print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        for i in range(10):
+            self.digits = ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"]
+            if (i+1 == self.mechanic[1]):
+                self.digits.pop(self.mechanic[0]-1)
+                self.digits.insert(self.mechanic[0]-1, "[!]")
+            if (i+1 == self.treasure[1]):
+                self.digits.pop(self.treasure[0]-1)
+                self.digits.insert(self.treasure[0]-1, "[?]")
+            #put printing digits here. needs to be self.digits
+            print(line.format(self.digits[0], self.digits[1], self.digits[2], self.digits[3], self.digits[4], self.digits[5], self.digits[6], self.digits[7], self.digits[8], self.digits[9]))
+
+            
 
 def move(XY: list) -> int:
     direction = str(input("What Action? Use (help) to view tips: "))
@@ -105,8 +124,7 @@ def move(XY: list) -> int:
         help()
         return XY
     elif (direction == "c"): #Maybe make so it points to closest object?
-        #func for closest object
-        compass(mechanic.XY)
+        compassAllFunc()
         return XY
     elif (direction == "exit"):
         global quitCheck
@@ -116,7 +134,7 @@ def move(XY: list) -> int:
         help()
         return XY
 
-def borderMechanic(XY: int):
+def borderMechanic(XY: int) -> int:
     if (XY > 10):
         print("\n",comment.commentPrint(comment.wallComments),"\n")
         return XY - 1
@@ -126,7 +144,7 @@ def borderMechanic(XY: int):
     else:
         return XY
 
-def encounterMechanic():
+def encounterMechanic() -> None:
     print("You have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
     while (action == "f"):
@@ -141,17 +159,17 @@ def encounterMechanic():
             print("\nYou scamper, giving the Flash a run for his money...\n")
             player.XY = move(player.XY)
 
-def encounterTreasure():
+def encounterTreasure() -> None:
     print("You have found a treasure chest\n")
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
         treasure.died()
-        pass
+        pass #NEEDS A TREASURE MECHANIC
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
-def fight():
+def fight() -> None:
     #Player Attack
     mechanicHealth = mechanic.health
     print("*BONK*\n")
@@ -179,29 +197,41 @@ def fight():
     if (player.health == 0):
         print("\n\n\n...You Died...\n\n\n")
         player.died()
+
+def compassAllFunc() -> None:
+    closest = closestObject()
+    if (distFinder(closest) > 5):
+        print("\nThe compass cannot find anything nearby.\n")
         return
+    compass(closest)
 
 def closestObject() -> list:
+    distance = 99999
+    point = []
     #Finding distances
     distMechanic = distFinder(mechanic.XY)
+    if (distMechanic < distance):
+        point = mechanic.XY
+        distance = distMechanic
     distTreasure = distFinder(treasure.XY)
-    #Storing distances
-    distDict = {
-        "mechanic" : distMechanic,
-        "treasure" : distTreasure}
-    distMin = min(distDict)#returns name of value
-    #maybe use if/elif ladder to return the value of closest object
+    if (distTreasure < distance):
+        point = treasure.XY
+        distance = distTreasure
+    #Returning closest
+    return point
 
 def distFinder(target: list) -> float:
+    global distanceList
     sideDist = lambda point, player: abs((player - point))
     a = sideDist(target[0], player.XY[0])
     b = sideDist(target[1], player.XY[1])
     a = pow(a, 2)
     b = pow(b, 2)
     c = a + b
-    return math.sqrt(c)
+    c = math.sqrt(c)
+    return c
 
-def compass(target: list):
+def compass(target: list) -> None:
     if (player.XY == target):
         print("\nThe Compass is spinning, you have arrived. The destination is on your right...\n")
         return
@@ -223,12 +253,12 @@ def compass(target: list):
     compass = yCompass+xCompass
     print(f"\nThe Compass is pointing {compass}.\n")
 
-def help():
+def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Movement Instructions:\n")
     print("Use (w),(a),(s),(d) to move North, West, South, and East,")
     print("Use (h) to view your health,")
-    print("Use (c) to view the compass.\n")
+    print("Use (c) to use the compass and find nearby objects.\n")
     #add general move() instructions above
     print("Encounter Instructions:\n")
     print("Use (f) to fight an encountered Game Mechanic,")
@@ -239,15 +269,15 @@ def help():
     print("Use (exit) to exit the game.")
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
-def showCoords():
+def showCoords() -> None:
     print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
     #PUT A COMMENT FUNC HERE
 
-def welcomePrints():
+def welcomePrints() -> None:
     print("Welcome to [insert game name]\n")
     showCoords()
 
-def encounterCheck():
+def encounterCheck() -> None:
     if (player.XY == mechanic.XY):
         encounterMechanic()
     elif (player.XY == treasure.XY):
