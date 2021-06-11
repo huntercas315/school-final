@@ -102,8 +102,6 @@ class mapStuff:
             print(lineString)
 
 maps = mapStuff()
-#add maps to movement coord message, create func to check if on an encounter coord using a bool to prevent using map during an encounter
-
 
 
 showMap = False     
@@ -181,7 +179,7 @@ def borderMechanic(XY: int) -> int:
         return XY
 
 def encounterMechanic() -> None:
-    print("You have found a wild 'Game Mechanic' in it's natural habitat, a game.")
+    print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     maps.mechanic = mechanic.XY
     action = "f"
     while (action == "f"):
@@ -326,6 +324,8 @@ def help() -> None:
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 def showCoords() -> None: #Informs the player of their location after movement
+    if encounterCheckBool():
+        return None
     if showMap:
         maps.drawMap()
         print(f"You are at {player.XY[0]} X and {player.XY[1]} Y.\n")
@@ -343,7 +343,7 @@ def encounterCheck() -> None: #Triggers events
     elif (player.XY == treasure.XY):
         encounterTreasure()
 
-def encounterCheck() -> bool: #This is for disabling displaying coords and the map
+def encounterCheckBool() -> bool: #This is for disabling displaying coords and the map
     if (player.XY == mechanic.XY):
         return True
     elif (player.XY == treasure.XY):
