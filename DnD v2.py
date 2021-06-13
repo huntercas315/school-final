@@ -35,8 +35,13 @@ player = stats(10, 0, 3)
 mechanic = stats(5, 0, 2)
 treasure = stats(0, 0, 0)
 
+while (player.XY is mechanic.XY):
+    mechanic.XY = [randrange(10)+1, randrange(10)+1]
+while (player.XY is treasure.XY):
+    treasure.XY = [randrange(10)+1, randrange(10)+1]
 
-#####
+
+##### Beta stuff
 print(treasure.XY)
 print(mechanic.XY)
 #####
@@ -63,31 +68,45 @@ class comments:
 
 comment = comments()
 
-class map:
+class mapStuff:
     __slots__ = [
         "digits",
         "mechanic",
         "treasure"]
     def __init__(self):
-        self.digits = ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"]
+        self.digits = []
         self.mechanic = [-1,-1]
         self.treasure = [-1,-1]
     def drawMap(self):
-        print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        for i in range(10):
-            self.digits = ["[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]", "[_]"]
-            if (i+1 == self.mechanic[1]):
-                self.digits.pop(self.mechanic[0]-1)
-                self.digits.insert(self.mechanic[0]-1, "[!]")
-            if (i+1 == self.treasure[1]):
-                self.digits.pop(self.treasure[0]-1)
-                self.digits.insert(self.treasure[0]-1, "[?]")
-            #put printing digits here. needs to be self.digits
-            print(line.format(self.digits[0], self.digits[1], self.digits[2], self.digits[3], self.digits[4], self.digits[5], self.digits[6], self.digits[7], self.digits[8], self.digits[9]))
+        self.digits = []
+        self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+        for i in range(11):
+            digitTemp = ["|"]
+            for e in range(11):
+                if (player.XY[1] == i and player.XY[0] == e):
+                    digitTemp.append("[@]")
+                elif (self.treasure[1] == i and self.treasure[0] == e):
+                    digitTemp.append("[=]")
+                elif (self.mechanic[1] == i and self.mechanic[0] == e):
+                    digitTemp.append("[!]")
+                else:
+                    digitTemp.append("[_]")
+            digitTemp.append("|")
+            self.digits.append(digitTemp)
+        self.digits.append("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        self.digits.reverse()
+        for z in self.digits:
+            lineString = ""
+            for u in z:
+                lineString += u
+            print(lineString)
 
-            
+maps = mapStuff()
+
+     
 
 def move(XY: list) -> int:
+    global showMap
     direction = str(input("What Action? Use (help) to view tips: "))
     if (direction == "w"):
         temp = XY[1]+1
@@ -123,8 +142,22 @@ def move(XY: list) -> int:
     elif (direction == "help"):
         help()
         return XY
-    elif (direction == "c"): #Maybe make so it points to closest object?
+    elif (direction == "c"):
         compassAllFunc()
+        return XY
+    elif (direction == "m"):
+        maps.drawMap()
+        return XY
+    elif (direction == "map"):
+        if showMap:
+            showMap = False
+            print("\nThe map has been turned off.\n")
+        else:
+            showMap = True
+            print("\nThe map has been turned on.\n")
+        return XY
+    elif (direction == "stats"):
+        statViewer()
         return XY
     elif (direction == "exit"):
         global quitCheck
@@ -145,7 +178,8 @@ def borderMechanic(XY: int) -> int:
         return XY
 
 def encounterMechanic() -> None:
-    print("You have found a wild 'Game Mechanic' in it's natural habitat, a game.")
+    print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
+    maps.mechanic = mechanic.XY
     action = "f"
     while (action == "f"):
         action = str(input("What will you do? (f)ight or (r)un: "))
@@ -161,9 +195,14 @@ def encounterMechanic() -> None:
 
 def encounterTreasure() -> None:
     print("You have found a treasure chest\n")
+    maps.treasure = treasure.XY
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
+        ####
+        print("Incomplete mechanic, come back later...")
+        #####
         treasure.died()
+        maps.treasure = [-1,-1]
         pass #NEEDS A TREASURE MECHANIC
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
@@ -253,12 +292,25 @@ def compass(target: list) -> None:
     compass = yCompass+xCompass
     print(f"\nThe Compass is pointing {compass}.\n")
 
+def statViewer() -> None:
+    print()
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("Stats:")
+    print(f"    Health: {player.health}/{player.originHealth}")
+    print(f"    Attack: {player.attackMin+1}-{player.attackMax}")
+    print(f"    X: {player.XY[0]}")
+    print(f"    Y: {player.XY[1]}")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print()
+
 def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Movement Instructions:\n")
     print("Use (w),(a),(s),(d) to move North, West, South, and East,")
     print("Use (h) to view your health,")
-    print("Use (c) to use the compass and find nearby objects.\n")
+    print("Use (c) to use the compass and find nearby objects,")
+    print("Use (m) to view the map,")
+    print("Use (map) to toggle viewing the map when moving.\n")
     #add general move() instructions above
     print("Encounter Instructions:\n")
     print("Use (f) to fight an encountered Game Mechanic,")
@@ -269,24 +321,39 @@ def help() -> None:
     print("Use (exit) to exit the game.")
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
-def showCoords() -> None:
-    print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+def showCoords() -> None: #Informs the player of their location after movement
+    if encounterCheckBool():
+        return None
+    if showMap:
+        maps.drawMap()
+        print(f"You are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+    else:
+        print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
     #PUT A COMMENT FUNC HERE
 
-def welcomePrints() -> None:
+def welcomePrints() -> None: 
     print("Welcome to [insert game name]\n")
     showCoords()
 
-def encounterCheck() -> None:
+def encounterCheck() -> None: #Triggers events
     if (player.XY == mechanic.XY):
         encounterMechanic()
     elif (player.XY == treasure.XY):
         encounterTreasure()
 
+def encounterCheckBool() -> bool: #This is for disabling displaying coords and the map
+    if (player.XY == mechanic.XY):
+        return True
+    elif (player.XY == treasure.XY):
+        return True
+    else:
+        return False
+
 
 
 #The Starting Parts
 quitCheck = False
+showMap = False
 
 welcomePrints()
 while True:
