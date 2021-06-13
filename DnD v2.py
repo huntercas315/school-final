@@ -105,7 +105,7 @@ maps = mapStuff()
 
      
 
-def move(XY: list) -> int:
+def move(XY: list) -> list:
     global showMap
     direction = str(input("What Action? Use (help) to view tips: "))
     if (direction == "w"):
