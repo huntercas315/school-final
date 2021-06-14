@@ -44,8 +44,8 @@ options = options(False, True)
 class stats:
     __slots__ = [
             "health",
+            "maxHealth",
             "originHealth",
-            "healthBuff",
             "attackMin",
             "attackMax",
             "attackBuff",
@@ -53,8 +53,8 @@ class stats:
             "upgrades"]
     def __init__(self, health: int, attackMin: int, attackMax: int):
         self.health = health
+        self.maxHealth = health
         self.originHealth = health
-        self.healthBuff = 0
         self.attackMin = attackMin
         self.attackMax = attackMax
         self.attackBuff = 0
@@ -62,21 +62,24 @@ class stats:
         #XY[0] is X, XY[1] is Y
         self.upgrades = ["health", "attack"]
     def attack(self, target) -> int:
-        target -= randrange(self.attackMin, self.attackMax)+1
+        damage = randrange(self.attackMin, self.attackMax)+1
+        damage += self.attackBuff
+        target -= damage
         return target
     def died(self):
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth
         self.attackBuff = 0
-        self.healthBuff = 0
     def upgrade(self):
         option = self.upgrades[randrange(len(self.upgrades))]
         if (option == "health"):
-            self.healthBuff += 3
-            print("You have found an item that buffs your health!")#add \n's where needed, future me
+            buff = randrange(2,5)
+            self.health += buff
+            print(f"You have found an item that increased your health by {buff}!")#add \n's where needed, future me #tell player how much of an increase
         elif (option == "attack"):
-            self.attackBuff += 3
-            print("You have found an item that buffs your damage!") #ditto
+            buff = randrange(1,3)
+            self.attackBuff += buff
+            print(f"You have found an item that buffed your damage by {buff}!") #ditto #Make so it adds a value to the random damage func | damageMin to Max then + buff
     def statViewer(self) -> None:
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -264,6 +267,8 @@ def encounterTreasure() -> None:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
+
+#When starting fight, add buff to health values
 def fight() -> None: #NEEDS REFACTOR
     #Player Attack
     mechanicHealth = mechanic.health
