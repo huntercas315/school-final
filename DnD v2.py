@@ -3,22 +3,63 @@ from random import randrange
 
 
 quitCheck = False
-showMap = False
 
+
+class options:
+    __slots__ = [
+            "showMap",
+            "showComments"]
+    def __init__(self, maps: bool, comments: bool):
+        self.showMap = maps
+        self.showComments = comments
+    def optionsViewer(self) -> None:
+        print()
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Options:")
+        print("    Enter (map) to toggle displaying the map during movement,")
+        print("    Enter (comments) to toggle displaying the comments during movement,")
+        print("    Enter (done) to leave this menu.")
+        while True:
+            option = str(input("Option: "))
+            if (option == "map" or option == "MAP"):
+                self.showMap = self.toggle(self.showMap)
+            elif (option == "comments" or option == "COMMENTS"):
+                self.showComments = self.toggle(self.showComments)
+            elif (option == "done" or option == "DONE"):
+                break
+            else:
+                break
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+    def toggle(self, option: bool) -> bool:
+        if option:
+            print("The option is now off.")
+            return False
+        else:
+            print("The option is now on.")
+            return True
+
+options = options(False, True)
 
 class stats:
     __slots__ = [
             "health",
+            "maxHealth",
             "originHealth",
             "attackMin",
             "attackMax",
+            "attackMinOrigin",
+            "attackMaxOrigin",
             "XY",
             "upgrades"]
     def __init__(self, health: int, attackMin: int, attackMax: int):
         self.health = health
+        self.maxHealth = health
         self.originHealth = health
         self.attackMin = attackMin
         self.attackMax = attackMax
+        self.attackMinOrigin = attackMin
+        self.attackMaxOrigin = attackMax
         self.XY = [randrange(10)+1, randrange(10)+1]
         #XY[0] is X, XY[1] is Y
         self.upgrades = ["health", "attack"]
@@ -28,12 +69,24 @@ class stats:
     def died(self):
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth
+        self.attackMin = self.attackMinOrigin
+        self.attackMax = self.attackMinOrigin
     def upgrade(self):
         option = self.upgrades[randrange(1)]
         if (option == "health"):
             pass #may use to add weapons or armor?
         elif (option == "attack"):
             pass
+    def statViewer() -> None:
+        print()
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Stats:")
+        print(f"    Health: {self.health}/{self.maxHealth}")
+        print(f"    Attack: {self.attackMin+1}-{self.attackMax}")
+        print(f"    X: {self.XY[0]}")
+        print(f"    Y: {self.XY[1]}")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
 
 player = stats(10, 0, 3)
 mechanic = stats(5, 0, 2)
@@ -159,16 +212,11 @@ def move(XY: list) -> list:
     elif (direction == "m" or direction == "M"):
         maps.drawMap()
         return XY
-    elif (direction == "map" or direction == "MAP"):
-        if showMap:
-            showMap = False
-            print("\nThe map has been turned off.\n")
-        else:
-            showMap = True
-            print("\nThe map has been turned on.\n")
-        return XY
     elif (direction == "stats" or direction == "STATS"):
         statViewer()
+        return XY
+    elif (direction == "options" or direction == "OPTIONS"):
+        options.optionsViewer()
         return XY
     elif (direction == "exit" or direction == "EXIT"):
         global quitCheck
@@ -303,53 +351,37 @@ def compass(target: list) -> None:
     compass = yCompass+xCompass
     print(f"\nThe Compass is pointing {compass}.\n")
 
-def optionsViewer() -> None:
-    print()
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print("Settings:")
-##    showMap, 
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print()
-
-def statViewer() -> None:
-    print()
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print("Stats:")
-    print(f"    Health: {player.health}/{player.originHealth}")
-    print(f"    Attack: {player.attackMin+1}-{player.attackMax}")
-    print(f"    X: {player.XY[0]}")
-    print(f"    Y: {player.XY[1]}")
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print()
-
 def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Movement Instructions:\n")
     print("Use (w),(a),(s),(d) to move North, West, South, and East,")
     print("Use (h) to view your health,")
     print("Use (c) to use the compass and find nearby objects,")
-    print("Use (m) to view the map,")
-    print("Use (map) to toggle viewing the map when moving.\n")
+    print("Use (m) to view the map.\n")
     #add general move() instructions above
     print("Encounter Instructions:\n")
     print("Use (f) to fight an encountered Game Mechanic,")
     print("Use (r) to run and use the general movement controls,")
     print("Use (o) to open treasure chests.\n")
     #add encounter() instructions above
+    print("Use (options) to open the options menu,")
     print("Use (help) to access these tips,")
     print("Use (exit) to exit the game.")
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 def showCoords() -> None: #Informs the player of their location after movement
-    if encounterCheckBool():
+    if encounterCheckBool(): #Check is player is at an encounter and whether to continue the function
         return
-    if showMap:
+    if options.showMap:
         maps.drawMap()
-        print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.\n")
     else:
-        print(f"\nYou are at X: {player.XY[0]} and Y: {player.XY[1]}")
-        print(comment.commentPrint(comment.moveComments), "\n")
-    #PUT A COMMENT FUNC HERE
+        print()
+
+    print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.")
+    
+    if options.showComments:
+        print(comment.commentPrint(comment.moveComments))
+    print()
 
 def welcomePrints() -> None: 
     print("Welcome to [insert generic game name]\n")
@@ -375,7 +407,7 @@ def encounterCheckBool() -> bool: #This is for disabling displaying coords and t
 
 welcomePrints()
 while True:
-    #The encounter part
+    #Checks for encounters
     encounterCheck()
     #The exit/quit part
     if quitCheck:
