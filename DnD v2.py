@@ -2,6 +2,10 @@ import math
 from random import randrange
 
 
+quitCheck = False
+showMap = False
+
+
 class stats:
     __slots__ = [
             "health",
@@ -51,22 +55,29 @@ class comments:
     __slots__ = [
         "wallComments",
         "moveComments",
-        "fightComments",
-        "compassComments"]
+        "fightComments"]
     def __init__(self):
+        
         self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
             "A large wall blocks your path...",
             "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
             "A tiny ledge is in your path. You could jump over it, but this world is 2d. Turn back 2d person...",
             "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
-        self.moveComments = ["filler"]
-        self.fightComments = ["filler"]
+
+        self.moveComments = ["You have wandered into a desert.",
+            "A potato field surounds you.", "An abandoned city looms before you, silent and empty", "You have chanced upon an incredibly beautiful field, if only graphics were implemented...",
+            "You have stepped into an apple orchard.", "You have stumbled across the wonderous Screaming Goat! Say goodbye to your sanity!",
+            "The entrance to a dungeon lies before you, but you are claustrophobic and cannot enter for valid reasons"]
+        
+        self.fightComments = ["*bonk*",
+            "*Bam*", "*Smack*", "*Bop*", "*Bing Bong*", "onomatopoeia!", "*Attack Noises!*"]
+        
     def commentPrint(self, target: list) -> str:
         length = len(target)
         comment = target[randrange(length)]
         return comment
 
-comment = comments()
+comment = comments()#Make a settings menu to enable and disable maps and comments
 
 class mapStuff:
     __slots__ = [
@@ -211,14 +222,14 @@ def encounterTreasure() -> None:
 def fight() -> None:
     #Player Attack
     mechanicHealth = mechanic.health
-    print("*BONK*\n")
     mechanicHealth = player.attack(mechanicHealth)
     mechanic.health = mechanicHealth
+    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
     if (mechanic.health < 0):
         mechanic.health = 0
     print(f"The Game Mechanic has {mechanic.health} health left.\n")
     if (mechanic.health == 0):
-        print("\n\nThe Game Mechanic has died...\n\n")
+        print("\n\n...The Game Mechanic has died...\n\n")
         mechanic.died()
         return
     #The waiting/timer part
@@ -227,9 +238,9 @@ def fight() -> None:
         timer -= 1
     #Game Mechanic Attack
     playerHealth = player.health
-    print("\"Attack Noises\"\n")
     playerHealth = mechanic.attack(playerHealth)
     player.health = playerHealth
+    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
     if (player.health < 0):
         player.health = 0
     print(f"You have {player.health} health left.\n")
@@ -292,6 +303,14 @@ def compass(target: list) -> None:
     compass = yCompass+xCompass
     print(f"\nThe Compass is pointing {compass}.\n")
 
+def optionsViewer() -> None:
+    print()
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("Settings:")
+##    showMap, 
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print()
+
 def statViewer() -> None:
     print()
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -323,16 +342,17 @@ def help() -> None:
 
 def showCoords() -> None: #Informs the player of their location after movement
     if encounterCheckBool():
-        return None
+        return
     if showMap:
         maps.drawMap()
-        print(f"You are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+        print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.\n")
     else:
-        print(f"\nYou are at {player.XY[0]} X and {player.XY[1]} Y.\n")
+        print(f"\nYou are at X: {player.XY[0]} and Y: {player.XY[1]}")
+        print(comment.commentPrint(comment.moveComments), "\n")
     #PUT A COMMENT FUNC HERE
 
 def welcomePrints() -> None: 
-    print("Welcome to [insert game name]\n")
+    print("Welcome to [insert generic game name]\n")
     showCoords()
 
 def encounterCheck() -> None: #Triggers events
@@ -352,8 +372,6 @@ def encounterCheckBool() -> bool: #This is for disabling displaying coords and t
 
 
 #The Starting Parts
-quitCheck = False
-showMap = False
 
 welcomePrints()
 while True:
