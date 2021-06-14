@@ -108,47 +108,47 @@ maps = mapStuff()
 def move(XY: list) -> list:
     global showMap
     direction = str(input("What Action? Use (help) to view tips: "))
-    if (direction == "w"):
+    if (direction == "w" or direction == "W"):
         temp = XY[1]+1
         temp = borderMechanic(temp)
         XY.pop(1)
         XY.insert(1, temp)
         showCoords()
         return XY
-    elif (direction == "a"):
+    elif (direction == "a" or direction == "A"):
         temp = XY[0]-1
         temp = borderMechanic(temp)
         XY.pop(0)
         XY.insert(0, temp)
         showCoords()
         return XY
-    elif (direction == "s"):
+    elif (direction == "s" or direction == "S"):
         temp = XY[1]-1
         temp = borderMechanic(temp)
         XY.pop(1)
         XY.insert(1, temp)
         showCoords()
         return XY
-    elif (direction == "d"):
+    elif (direction == "d" or direction == "D"):
         temp = XY[0]+1
         temp = borderMechanic(temp)
         XY.pop(0)
         XY.insert(0, temp)
         showCoords()
         return XY
-    elif (direction == "h"):
+    elif (direction == "h" or direction == "H"):
         print(f"\nHealth: {player.health}\n")
         return XY
-    elif (direction == "help"):
+    elif (direction == "help" or direction == "HELP"):
         help()
         return XY
-    elif (direction == "c"):
+    elif (direction == "c" or direction == "C"):
         compassAllFunc()
         return XY
-    elif (direction == "m"):
+    elif (direction == "m" or direction == "M"):
         maps.drawMap()
         return XY
-    elif (direction == "map"):
+    elif (direction == "map" or direction == "MAP"):
         if showMap:
             showMap = False
             print("\nThe map has been turned off.\n")
@@ -156,10 +156,10 @@ def move(XY: list) -> list:
             showMap = True
             print("\nThe map has been turned on.\n")
         return XY
-    elif (direction == "stats"):
+    elif (direction == "stats" or direction == "STATS"):
         statViewer()
         return XY
-    elif (direction == "exit"):
+    elif (direction == "exit" or direction == "EXIT"):
         global quitCheck
         quitCheck = True
         return XY
