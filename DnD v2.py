@@ -44,22 +44,20 @@ options = options(False, True)
 class stats:
     __slots__ = [
             "health",
-            "maxHealth",
             "originHealth",
+            "healthBuff",
             "attackMin",
             "attackMax",
-            "attackMinOrigin",
-            "attackMaxOrigin",
+            "attackBuff",
             "XY",
             "upgrades"]
     def __init__(self, health: int, attackMin: int, attackMax: int):
         self.health = health
-        self.maxHealth = health
         self.originHealth = health
+        self.healthBuff = 0
         self.attackMin = attackMin
         self.attackMax = attackMax
-        self.attackMinOrigin = attackMin
-        self.attackMaxOrigin = attackMax
+        self.attackBuff = 0
         self.XY = [randrange(10)+1, randrange(10)+1]
         #XY[0] is X, XY[1] is Y
         self.upgrades = ["health", "attack"]
@@ -69,15 +67,17 @@ class stats:
     def died(self):
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth
-        self.attackMin = self.attackMinOrigin
-        self.attackMax = self.attackMinOrigin
+        self.attackBuff = 0
+        self.healthBuff = 0
     def upgrade(self):
-        option = self.upgrades[randrange(1)]
+        option = self.upgrades[randrange(len(self.upgrades))]
         if (option == "health"):
-            pass #may use to add weapons or armor?
+            self.healthBuff += 3
+            print("You have found an item that buffs your health!")#add \n's where needed, future me
         elif (option == "attack"):
-            pass
-    def statViewer() -> None:
+            self.attackBuff += 3
+            print("You have found an item that buffs your damage!") #ditto
+    def statViewer(self) -> None:
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Stats:")
@@ -213,7 +213,7 @@ def move(XY: list) -> list:
         maps.drawMap()
         return XY
     elif (direction == "stats" or direction == "STATS"):
-        statViewer()
+        player.statViewer()
         return XY
     elif (direction == "options" or direction == "OPTIONS"):
         options.optionsViewer()
@@ -236,7 +236,7 @@ def borderMechanic(XY: int) -> int:
     else:
         return XY
 
-def encounterMechanic() -> None:
+def encounterMechanic() -> None: #NEEDS REFACTOR
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     maps.mechanic = mechanic.XY
     action = "f"
@@ -257,17 +257,14 @@ def encounterTreasure() -> None:
     maps.treasure = treasure.XY
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o"):
-        ####
-        print("Incomplete mechanic, come back later...")
-        #####
+        player.upgrade()
         treasure.died()
         maps.treasure = [-1,-1]
-        pass #NEEDS A TREASURE MECHANIC
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
-def fight() -> None:
+def fight() -> None: #NEEDS REFACTOR
     #Player Attack
     mechanicHealth = mechanic.health
     mechanicHealth = player.attack(mechanicHealth)
@@ -357,7 +354,8 @@ def help() -> None:
     print("Use (w),(a),(s),(d) to move North, West, South, and East,")
     print("Use (h) to view your health,")
     print("Use (c) to use the compass and find nearby objects,")
-    print("Use (m) to view the map.\n")
+    print("Use (m) to view the map,")
+    print("Use (stats) to view stats.\n")
     #add general move() instructions above
     print("Encounter Instructions:\n")
     print("Use (f) to fight an encountered Game Mechanic,")
