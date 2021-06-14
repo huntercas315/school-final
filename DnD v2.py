@@ -170,6 +170,64 @@ class mapStuff:
 
 maps = mapStuff()
 
+class compass:
+    def compassAllFunc(self) -> None:
+        closest = self.closestObject()
+        if (self.distFinder(closest) > 5):
+            print("\nThe compass cannot find anything nearby.\n")
+            return
+        self.compass(closest)
+
+    def closestObject(self) -> list:
+        distance = 99999
+        point = []
+        #Finding distances
+        distMechanic = self.distFinder(mechanic.XY)
+        if (distMechanic < distance):
+            point = mechanic.XY
+            distance = distMechanic
+        distTreasure = self.distFinder(treasure.XY)
+        if (distTreasure < distance):
+            point = treasure.XY
+            distance = distTreasure
+        #Returning closest
+        return point
+
+    def distFinder(self, target: list) -> float:
+        global distanceList
+        sideDist = lambda point, player: abs((player - point))
+        a = sideDist(target[0], player.XY[0])
+        b = sideDist(target[1], player.XY[1])
+        a = pow(a, 2)
+        b = pow(b, 2)
+        c = a + b
+        c = math.sqrt(c)
+        return c
+
+    def compass(self, target: list) -> None:
+        if (player.XY == target):
+            print("\nThe Compass is spinning, you have arrived. The destination is on your right...\n")
+            return
+        #North/South
+        if (player.XY[1] < target[1]):
+            yCompass = "North"
+        elif (player.XY[1] > target[1]):
+            yCompass = "South"
+        else:
+            yCompass = ""
+        #East/West
+        if (player.XY[0] < target[0]):
+            xCompass = "East"
+        elif (player.XY[0] > target[0]):
+            xCompass = "West"
+        else:
+            xCompass = ""
+        #Direction Creation
+        compass = yCompass+xCompass
+        print(f"\nThe Compass is pointing {compass}.\n")
+
+compass = compass()
+
      
 
 def move(XY: list) -> list:
@@ -210,7 +268,7 @@ def move(XY: list) -> list:
         help()
         return XY
     elif (direction == "c" or direction == "C"):
-        compassAllFunc()
+        compass.compassAllFunc()
         return XY
     elif (direction == "m" or direction == "M"):
         maps.drawMap()
@@ -298,61 +356,6 @@ def fight() -> None: #NEEDS REFACTOR
         print("\n\n\n...You Died...\n\n\n")
         player.died()
 
-def compassAllFunc() -> None:
-    closest = closestObject()
-    if (distFinder(closest) > 5):
-        print("\nThe compass cannot find anything nearby.\n")
-        return
-    compass(closest)
-
-def closestObject() -> list:
-    distance = 99999
-    point = []
-    #Finding distances
-    distMechanic = distFinder(mechanic.XY)
-    if (distMechanic < distance):
-        point = mechanic.XY
-        distance = distMechanic
-    distTreasure = distFinder(treasure.XY)
-    if (distTreasure < distance):
-        point = treasure.XY
-        distance = distTreasure
-    #Returning closest
-    return point
-
-def distFinder(target: list) -> float:
-    global distanceList
-    sideDist = lambda point, player: abs((player - point))
-    a = sideDist(target[0], player.XY[0])
-    b = sideDist(target[1], player.XY[1])
-    a = pow(a, 2)
-    b = pow(b, 2)
-    c = a + b
-    c = math.sqrt(c)
-    return c
-
-def compass(target: list) -> None:
-    if (player.XY == target):
-        print("\nThe Compass is spinning, you have arrived. The destination is on your right...\n")
-        return
-    #North/South
-    if (player.XY[1] < target[1]):
-        yCompass = "North"
-    elif (player.XY[1] > target[1]):
-        yCompass = "South"
-    else:
-        yCompass = ""
-    #East/West
-    if (player.XY[0] < target[0]):
-        xCompass = "East"
-    elif (player.XY[0] > target[0]):
-        xCompass = "West"
-    else:
-        xCompass = ""
-    #Direction Creation
-    compass = yCompass+xCompass
-    print(f"\nThe Compass is pointing {compass}.\n")
-
 def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Movement Instructions:\n")
@@ -375,14 +378,14 @@ def help() -> None:
 def showCoords() -> None: #Informs the player of their location after movement
     if encounterCheckBool(): #Check is player is at an encounter and whether to continue the function
         return
-    if options.showMap:
+    if options.showMap: #shows the map if enabled
         maps.drawMap()
     else:
         print()
 
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.")
     
-    if options.showComments:
+    if options.showComments: #shows a wee message if enabled
         print(comment.commentPrint(comment.moveComments))
     print()
 
