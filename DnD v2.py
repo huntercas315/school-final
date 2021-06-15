@@ -79,11 +79,11 @@ class stats:
         if (option == "h" or option == "H"):
             buff = randrange(2,5)
             self.maxHealth += buff
-            print(f"\nYou have found an item that increased your max health by {buff}!\n")#add \n's where needed, future me #tell player how much of an increase
+            print(f"\nYou have found an item that increased your max health by {buff}!\n")
         elif (option == "d" or option == "D"):
             buff = randrange(1,2)
             self.attackBuff += buff
-            print(f"\nYou have found an item that buffed your damage by {buff}!\n") #ditto
+            print(f"\nYou have found an item that buffed your damage by {buff}!\n") 
     def heal(self):
         if (self.heals > 0):
             self.heals -= 1
@@ -205,30 +205,76 @@ class shop:
     __slots__ = [
         "location",
         "heals",
+        "healsPrice",
         "upgrades",
+        "upgradesPrice",
         "selections"]
     def __init__(self, heals: int, upgrades: int):
         self.location = [3,3]
         self.heals = heals
+        self.healsPrice = 50
         self.upgrades = upgrades
+        self.upgradesPrice = 125
         self.selections = ["done","DONE","h","H","u","U"]
-    def openStore(self):
+    def startStore(self) -> None:
+        enter = input("You have found the shop, enter? (y)/(n): ")
+        if (enter == "y" or enter == "Y"):
+            self.openStore()
+        else:
+            return
+    def openStore(self) -> None:
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Shop:")
-        print("    (h)ealing items | 50 COINS")
-        print("    (u)pgrades      | 125 COINS")
+        print(f"    (h)ealing items | {self.healsPrice} COINS  | Stock: {self.heals}")
+        print(f"    (u)pgrades      | {self.upgradesPrice} COINS | Stock: {self.upgrades}")
         print()
-        print("(done)")
+        print("    (done)")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(f"You have {player.coins} COINS")
         print()
         
-        choice = input("What are you buying: ")
-        while choice not in self.selections:
+        while True:
+            print(f"You have {player.coins} COINS")
             choice = input("What are you buying: ")
-        if (choice == "done" or choice == "DONE"):
-            return
+            if choice not in self.selections:
+                break
+            elif (choice == "done" or choice == "DONE"):
+                break
+            else:
+                self.buy(choice)
+                print(f"You have {player.coins} coins\n")
+    def buy(self, item: str):
+        if (item == "h" or item == "H"):
+            quantity = int(input("How many? "))
+            while (quantity > self.heals or quantity < 0):
+                print("The shop does not have that much in stock.")
+                quantity = input("How many? ")
+            if (quantity == 0):
+                return
+            cost = self.healsPrice * quantity
+            if (cost > player.coins):
+                print(f"\nYou can't afford this, you have {player.coins} coins, the cost is {cost}\n")
+                return
+            player.coins -= cost
+            player.heals += quantity
+            print(f"\nYou have {player.heals} healing items and {player.coins} coins left.\n")
+        elif (item == "u" or item == "U"):
+            cost = self.upgradesPrice
+            if (cost > player.coins):
+                print(f"\nYou can't afford this, you have {player.coins} coins, the cost is {cost}\n")
+                return
+            player.coins -= cost
+            option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
+            while (option != "h" and option != "H" and option != "d" and option != "D"):
+                option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
+            if (option == "h" or option == "H"):
+                buff = randrange(2,5)
+                self.maxHealth += buff
+                print(f"\nYou have increased your max health by {buff}!\n")#add \n's where needed, future me #tell player how much of an increase
+            elif (option == "d" or option == "D"):
+                buff = randrange(1,2)
+                self.attackBuff += buff
+                print(f"\nYou have buffed your damage by {buff}!\n")
 
 shop = shop(4, 2)
 
