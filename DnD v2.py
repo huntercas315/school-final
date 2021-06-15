@@ -49,14 +49,18 @@ class stats:
             "attackMin",
             "attackMax",
             "attackBuff",
+            "heals",
+            "coins",
             "XY"]
-    def __init__(self, health: int, attackMin: int, attackMax: int):
+    def __init__(self, health: int, attackMin: int, attackMax: int, heals: int, coins: int):
         self.health = health
         self.maxHealth = health
         self.originHealth = health
         self.attackMin = attackMin
         self.attackMax = attackMax
         self.attackBuff = 0
+        self.heals = heals
+        self.coins = coins
         self.XY = [randrange(10)+1, randrange(10)+1]
         #XY[0] is X, XY[1] is Y
     def attack(self, target) -> int:
@@ -69,43 +73,50 @@ class stats:
         self.health = self.originHealth
         self.attackBuff = 0
     def upgrade(self):
-        option = input("What would you like to upgrade? (h)ealth or (d)amage: ")
+        option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
         while (option != "h" and option != "H" and option != "d" and option != "D"):
-            option = input("What would you like to upgrade? (h)ealth or (d)amage: ")
+            option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
         if (option == "h" or option == "H"):
             buff = randrange(2,5)
-            self.health += buff
-            print(f"You have found an item that increased your health by {buff}!")#add \n's where needed, future me #tell player how much of an increase
+            self.maxHealth += buff
+            print(f"\nYou have found an item that increased your max health by {buff}!\n")#add \n's where needed, future me #tell player how much of an increase
         elif (option == "d" or option == "D"):
-            buff = randrange(1,3)
+            buff = randrange(1,2)
             self.attackBuff += buff
-            print(f"You have found an item that buffed your damage by {buff}!") #ditto #Make so it adds a value to the random damage func | damageMin to Max then + buff
+            print(f"\nYou have found an item that buffed your damage by {buff}!\n") #ditto
+    def heal(self):
+        if (self.heals > 0):
+            self.heals -= 1
+            self.health += 3
+            if (self.health > self.maxHealth):
+                self.health = self.maxHealth
+            print("\nYou have used a healing item, your health is now {self.health} and you have {self.heals} healing items left.\n")
+        else:
+            print("\nYou have no healing items left.\n")
     def statViewer(self) -> None:
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Stats:")
         print(f"    Health: {self.health}/{self.maxHealth}")
         print(f"    Attack: {self.attackMin+1}-{self.attackMax}")
+        print(f"    Attack Buffed by {self.attackBuff}")
+        print()
+        print(f"    Coins: {self.coins}")
+        print(f"    Healing Items: {self.heals}")
+        print()
         print(f"    X: {self.XY[0]}")
         print(f"    Y: {self.XY[1]}")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-player = stats(10, 0, 3)
-mechanic = stats(5, 0, 2)
-treasure = stats(0, 0, 0)
+player = stats(10, 0, 3, 2, 50)
+mechanic = stats(5, 0, 2, 0, 0)
+treasure = stats(0, 0, 0, 0, 0)
 
 while (player.XY is mechanic.XY):
     mechanic.XY = [randrange(10)+1, randrange(10)+1]
 while (player.XY is treasure.XY):
     treasure.XY = [randrange(10)+1, randrange(10)+1]
-
-
-##### Beta stuff
-print(treasure.XY)
-print(mechanic.XY)
-#####
-
 
 class comments:
     __slots__ = [
@@ -228,6 +239,26 @@ class compass:
 
 compass = compass()
 
+class shop:
+    __slots__ = [
+        "heals",
+        "upgrades"]
+    def __init__(self, heals: int, upgrades: int):
+        self.heals = heals
+        self.upgrades = upgrades
+    def openStore(self):
+        print()
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Shop:")
+        print("    (h)ealing items | 50 GOLD")
+        print("    (u)pgrades      | 125 GOLD")
+        print()
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        #shop input here
+
+shop = shop()
+
      
 
 def move(XY: list) -> list:
@@ -273,6 +304,9 @@ def move(XY: list) -> list:
     elif (direction == "m" or direction == "M"):
         maps.drawMap()
         return XY
+    elif (direction == "heal" or direction == "HEAL"):
+        player.heal()
+        return XY
     elif (direction == "stats" or direction == "STATS"):
         player.statViewer()
         return XY
@@ -282,6 +316,16 @@ def move(XY: list) -> list:
     elif (direction == "exit" or direction == "EXIT"):
         global quitCheck
         quitCheck = True
+        return XY
+    ###########
+    elif (direction == "beta"): #BETA STUFF - REMOVE LATER
+        ##### Beta stuff
+        print(treasure.XY)
+        print(mechanic.XY)
+        #####
+        return XY
+    elif (direction == "beta2"):
+        player.coins += 250
         return XY
     else:
         help()
@@ -301,33 +345,40 @@ def encounterMechanic() -> None: #NEEDS REFACTOR
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     maps.mechanic = mechanic.XY
     action = "f"
-    while (action == "f"):
-        action = str(input("What will you do? (f)ight or (r)un: "))
+    while True:
+        action = str(input("What will you do? (f)ight, (h)eal or (r)un: "))
         print()
-        if (action == "f"):
+        if (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
             fight()
             if (player.XY != mechanic.XY):
                 break
+        elif (action == "heal" or action == "HEAL"):
+            player.heal()
         else:
             print("\nYou scamper, giving the Flash a run for his money...\n")
             player.XY = move(player.XY)
+            break
 
 def encounterTreasure() -> None:
     print("You have found a treasure chest\n")
     maps.treasure = treasure.XY
     action = str(input("What will you do? (o)pen or (r)un: "))
-    if (action == "o"):
-        player.upgrade()
+    if (action == "o" or action == "O"):
+        coinToss = randrange(1,100)
+        if (coinToss in range(80,100)):
+            player.upgrade()
+        else:
+            coinTemp = randrange(50,200)
+            player.coins += coinTemp
+            print(f"\nYou have found {coinTemp} coins!\n")
         treasure.died()
         maps.treasure = [-1,-1]
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
-
-#When starting fight, add buff to health values
-def fight() -> None: #NEEDS REFACTOR
+def fight() -> None: #NEEDS REFACTOR - MAYBE
     #Player Attack
     mechanicHealth = mechanic.health
     mechanicHealth = player.attack(mechanicHealth)
@@ -339,6 +390,8 @@ def fight() -> None: #NEEDS REFACTOR
     if (mechanic.health == 0):
         print("\n\n...The Game Mechanic has died...\n\n")
         mechanic.died()
+        mechanic.health += 3
+        mechanic.attackBuff += 1
         return
     #The waiting/timer part
     timer = 9999999
@@ -361,12 +414,14 @@ def help() -> None:
     print("Movement Instructions:\n")
     print("Use (w),(a),(s),(d) to move North, West, South, and East,")
     print("Use (h) to view your health,")
+    print("Use (heal) to use a healing item to gain health,")
     print("Use (c) to use the compass and find nearby objects,")
     print("Use (m) to view the map,")
     print("Use (stats) to view stats.\n")
     #add general move() instructions above
     print("Encounter Instructions:\n")
     print("Use (f) to fight an encountered Game Mechanic,")
+    print("Use (heal) to use a healing item to gain health,")
     print("Use (r) to run and use the general movement controls,")
     print("Use (o) to open treasure chests.\n")
     #add encounter() instructions above
