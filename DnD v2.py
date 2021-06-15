@@ -90,7 +90,7 @@ class stats:
             self.health += 3
             if (self.health > self.maxHealth):
                 self.health = self.maxHealth
-            print("\nYou have used a healing item, your health is now {self.health} and you have {self.heals} healing items left.\n")
+            print(f"\nYou have used a healing item, your health is now {self.health} and you have {self.heals} healing items left.\n")
         else:
             print("\nYou have no healing items left.\n")
     def statViewer(self) -> None:
@@ -112,11 +112,6 @@ class stats:
 player = stats(10, 0, 3, 2, 50)
 mechanic = stats(5, 0, 2, 0, 0)
 treasure = stats(0, 0, 0, 0, 0)
-
-while (player.XY is mechanic.XY):
-    mechanic.XY = [randrange(10)+1, randrange(10)+1]
-while (player.XY is treasure.XY):
-    treasure.XY = [randrange(10)+1, randrange(10)+1]
 
 class comments:
     __slots__ = [
@@ -146,40 +141,7 @@ class comments:
 
 comment = comments()#Make a settings menu to enable and disable maps and comments
 
-class mapStuff:
-    __slots__ = [
-        "digits",
-        "mechanic",
-        "treasure"]
-    def __init__(self):
-        self.digits = []
-        self.mechanic = [-1,-1]
-        self.treasure = [-1,-1]
-    def drawMap(self):
-        self.digits = []
-        self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-        for i in range(11):
-            digitTemp = ["|"]
-            for e in range(11):
-                if (player.XY[1] == i and player.XY[0] == e):
-                    digitTemp.append("[@]")
-                elif (self.treasure[1] == i and self.treasure[0] == e):
-                    digitTemp.append("[=]")
-                elif (self.mechanic[1] == i and self.mechanic[0] == e):
-                    digitTemp.append("[!]")
-                else:
-                    digitTemp.append("[_]")
-            digitTemp.append("|")
-            self.digits.append(digitTemp)
-        self.digits.append("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        self.digits.reverse()
-        for z in self.digits:
-            lineString = ""
-            for u in z:
-                lineString += u
-            print(lineString)
 
-maps = mapStuff()
 
 class compass:
     def compassAllFunc(self) -> None:
@@ -241,23 +203,74 @@ compass = compass()
 
 class shop:
     __slots__ = [
+        "location",
         "heals",
-        "upgrades"]
+        "upgrades",
+        "selections"]
     def __init__(self, heals: int, upgrades: int):
+        self.location = [3,3]
         self.heals = heals
         self.upgrades = upgrades
+        self.selections = ["done","DONE","h","H","u","U"]
     def openStore(self):
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Shop:")
-        print("    (h)ealing items | 50 GOLD")
-        print("    (u)pgrades      | 125 GOLD")
+        print("    (h)ealing items | 50 COINS")
+        print("    (u)pgrades      | 125 COINS")
         print()
+        print("(done)")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(f"You have {player.coins} COINS")
         print()
-        #shop input here
+        
+        choice = input("What are you buying: ")
+        while choice not in self.selections:
+            choice = input("What are you buying: ")
+        if (choice == "done" or choice == "DONE"):
+            return
 
-shop = shop()
+shop = shop(4, 2)
+
+
+class mapStuff:
+    __slots__ = [
+        "digits",
+        "shop",
+        "mechanic",
+        "treasure"]
+    def __init__(self):
+        self.digits = []
+        self.shop = shop.location
+        self.mechanic = [-1,-1]
+        self.treasure = [-1,-1]
+    def drawMap(self):
+        self.digits = []
+        self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+        for i in range(11):
+            digitTemp = ["|"]
+            for e in range(11):
+                if (player.XY[1] == i and player.XY[0] == e):
+                    digitTemp.append("[@]")
+                elif (self.shop[1] == i and self.shop[0] == e):
+                    digitTemp.append("[$]")
+                elif (self.treasure[1] == i and self.treasure[0] == e):
+                    digitTemp.append("[=]")
+                elif (self.mechanic[1] == i and self.mechanic[0] == e):
+                    digitTemp.append("[!]")
+                else:
+                    digitTemp.append("[_]")
+            digitTemp.append("|")
+            self.digits.append(digitTemp)
+        self.digits.append("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        self.digits.reverse()
+        for z in self.digits:
+            lineString = ""
+            for u in z:
+                lineString += u
+            print(lineString)
+
+maps = mapStuff()
 
      
 
@@ -293,7 +306,7 @@ def move(XY: list) -> list:
         showCoords()
         return XY
     elif (direction == "h" or direction == "H"):
-        print(f"\nHealth: {player.health}\n")
+        print(f"\nHealth: {player.health}/{player.maxHealth}\n")
         return XY
     elif (direction == "help" or direction == "HELP"):
         help()
@@ -327,6 +340,10 @@ def move(XY: list) -> list:
     elif (direction == "beta2"):
         player.coins += 250
         return XY
+    elif (direction == "beta3"):
+        player.upgrade()
+        return XY
+    ##########
     else:
         help()
         return XY
@@ -409,6 +426,11 @@ def fight() -> None: #NEEDS REFACTOR - MAYBE
         print("\n\n\n...You Died...\n\n\n")
         player.died()
 
+def coordCheck(XY: list) -> list:
+    while (XY == player.XY or XY == shop.location):
+        XY = [randrange(10)+1, randrange(10)+1]
+    return XY
+
 def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Movement Instructions:\n")
@@ -449,7 +471,9 @@ def welcomePrints() -> None:
     showCoords()
 
 def encounterCheck() -> None: #Triggers events
-    if (player.XY == mechanic.XY):
+    if (player.XY == shop.location):
+        shop.openStore()
+    elif (player.XY == mechanic.XY):
         encounterMechanic()
     elif (player.XY == treasure.XY):
         encounterTreasure()
@@ -462,7 +486,8 @@ def encounterCheckBool() -> bool: #This is for disabling displaying coords and t
     else:
         return False
 
-
+mechanic.XY = coordCheck(mechanic.XY)
+treasure.XY = coordCheck(treasure.XY)
 
 #The Starting Parts
 
