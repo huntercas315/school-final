@@ -219,7 +219,7 @@ class shop:
         self.upgradesPrice = 125
         self.selections = ["done","DONE","h","H","u","U"]
     def startStore(self) -> None:
-        enter = input("You have found the shop, enter? (y)/(n): ")
+        enter = input("\n\nYou have found the shop, enter? (y)/(n): ")
         if (enter == "y" or enter == "Y"):
             self.openStore()
         else:
@@ -289,7 +289,7 @@ class mapStuff:
         "treasure"]
     def __init__(self):
         self.digits = []
-        self.shop = shop.location
+        self.shop = [-1,-1]
         self.mechanic = [-1,-1]
         self.treasure = [-1,-1]
     def drawMap(self) -> None:
@@ -411,7 +411,7 @@ def encounterMechanic() -> None: #NEEDS REFACTOR
     maps.mechanic = mechanic.XY
     action = "f"
     while True:
-        action = str(input("What will you do? (f)ight, (h)eal or (r)un: "))
+        action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
         print()
         if (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
@@ -498,6 +498,11 @@ def help() -> None:
     print("Use (r) to run and use the general movement controls,")
     print("Use (o) to open treasure chests.\n")
     #add encounter() instructions above
+    print("Shop Instructions:")
+    print("When at a shop, enter the item you would like to purchase,")
+    print("If you have enough gold, you will be able to buy items for healing or upgrading yourself,")
+    print("Enter (done) to finish your shopping,")
+    print("Get more coins from treasure chests and Game Mechanics.\n")
     print("Use (options) to open the options menu,")
     print("Use (help) to access these tips,")
     print("Use (exit) to exit the game.")
@@ -523,6 +528,7 @@ def welcomePrints() -> None:
 
 def encounterCheck() -> None: #Triggers events
     if (player.XY == shop.location):
+        maps.shop = shop.location
         shop.startStore()
     elif (player.XY == mechanic.XY):
         encounterMechanic()
