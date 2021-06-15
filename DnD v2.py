@@ -49,8 +49,7 @@ class stats:
             "attackMin",
             "attackMax",
             "attackBuff",
-            "XY",
-            "upgrades"]
+            "XY"]
     def __init__(self, health: int, attackMin: int, attackMax: int):
         self.health = health
         self.maxHealth = health
@@ -60,7 +59,6 @@ class stats:
         self.attackBuff = 0
         self.XY = [randrange(10)+1, randrange(10)+1]
         #XY[0] is X, XY[1] is Y
-        self.upgrades = ["health", "attack"]
     def attack(self, target) -> int:
         damage = randrange(self.attackMin, self.attackMax)+1
         damage += self.attackBuff
@@ -71,12 +69,14 @@ class stats:
         self.health = self.originHealth
         self.attackBuff = 0
     def upgrade(self):
-        option = self.upgrades[randrange(len(self.upgrades))]
-        if (option == "health"):
+        option = input("What would you like to upgrade? (h)ealth or (d)amage: ")
+        while (option != "h" and option != "H" and option != "d" and option != "D"):
+            option = input("What would you like to upgrade? (h)ealth or (d)amage: ")
+        if (option == "h" or option == "H"):
             buff = randrange(2,5)
             self.health += buff
             print(f"You have found an item that increased your health by {buff}!")#add \n's where needed, future me #tell player how much of an increase
-        elif (option == "attack"):
+        elif (option == "d" or option == "D"):
             buff = randrange(1,3)
             self.attackBuff += buff
             print(f"You have found an item that buffed your damage by {buff}!") #ditto #Make so it adds a value to the random damage func | damageMin to Max then + buff
