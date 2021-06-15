@@ -72,6 +72,8 @@ class stats:
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth
         self.attackBuff = 0
+        self.heals = 0
+        self.coins = 0
     def upgrade(self):
         option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
         while (option != "h" and option != "H" and option != "d" and option != "D"):
@@ -99,7 +101,7 @@ class stats:
         print("Stats:")
         print(f"    Health: {self.health}/{self.maxHealth}")
         print(f"    Attack: {self.attackMin+1}-{self.attackMax}")
-        print(f"    Attack Buffed by {self.attackBuff}")
+        print(f"    Attack Buffed by +{self.attackBuff}")
         print()
         print(f"    Coins: {self.coins}")
         print(f"    Healing Items: {self.heals}")
@@ -239,11 +241,11 @@ class shop:
             if choice not in self.selections:
                 break
             elif (choice == "done" or choice == "DONE"):
+                print()
                 break
             else:
                 self.buy(choice)
-                print(f"You have {player.coins} coins\n")
-    def buy(self, item: str):
+    def buy(self, item: str) -> None:
         if (item == "h" or item == "H"):
             quantity = int(input("How many? "))
             while (quantity > self.heals or quantity < 0):
@@ -257,7 +259,7 @@ class shop:
                 return
             player.coins -= cost
             player.heals += quantity
-            print(f"\nYou have {player.heals} healing items and {player.coins} coins left.\n")
+            print(f"\nYou now have {player.heals} healing items and {player.coins} coins left.\n")
         elif (item == "u" or item == "U"):
             cost = self.upgradesPrice
             if (cost > player.coins):
@@ -269,11 +271,11 @@ class shop:
                 option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
             if (option == "h" or option == "H"):
                 buff = randrange(2,5)
-                self.maxHealth += buff
-                print(f"\nYou have increased your max health by {buff}!\n")#add \n's where needed, future me #tell player how much of an increase
+                player.maxHealth += buff
+                print(f"\nYou have increased your max health by {buff}!\n")
             elif (option == "d" or option == "D"):
                 buff = randrange(1,2)
-                self.attackBuff += buff
+                player.attackBuff += buff
                 print(f"\nYou have buffed your damage by {buff}!\n")
 
 shop = shop(4, 2)
@@ -290,7 +292,7 @@ class mapStuff:
         self.shop = shop.location
         self.mechanic = [-1,-1]
         self.treasure = [-1,-1]
-    def drawMap(self):
+    def drawMap(self) -> None:
         self.digits = []
         self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         for i in range(11):
@@ -455,6 +457,9 @@ def fight() -> None: #NEEDS REFACTOR - MAYBE
         mechanic.died()
         mechanic.health += 3
         mechanic.attackBuff += 1
+        coinLoot = randrange(25,75)
+        print(f"You have gained {coinLoot} coins!\n")
+        player.coins += coinLoot
         return
     #The waiting/timer part
     timer = 9999999
@@ -518,7 +523,7 @@ def welcomePrints() -> None:
 
 def encounterCheck() -> None: #Triggers events
     if (player.XY == shop.location):
-        shop.openStore()
+        shop.startStore()
     elif (player.XY == mechanic.XY):
         encounterMechanic()
     elif (player.XY == treasure.XY):
@@ -539,6 +544,9 @@ treasure.XY = coordCheck(treasure.XY)
 
 welcomePrints()
 while True:
+    #The exit/quit part
+    if quitCheck:
+        break
     #Checks for encounters
     encounterCheck()
     #The exit/quit part
