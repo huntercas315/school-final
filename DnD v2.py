@@ -73,6 +73,7 @@ class stats:
     def died(self):
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth
+        self.maxHealth = self.originHealth
         self.attackBuff = 0
         self.heals = 0
         self.coins = 0
