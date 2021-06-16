@@ -1,5 +1,6 @@
 import math
 from random import randrange
+from typing import List
 
 quitCheck = False
 
@@ -169,7 +170,8 @@ class mechanicStats:
         maps.mechanic = [-1, -1]
 
 
-mechanic = mechanicStats("!", 5, 0, 2)
+mechanic = mechanicStats("!", 5, 1, 2)
+mechanic2 = mechanicStats("!", 7, 0, 3)
 
 
 class comments:
@@ -179,12 +181,11 @@ class comments:
         "fightComments"]
 
     def __init__(self):
-        self.wallComments = [
-            "You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
-            "A large wall blocks your path...",
-            "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
-            "A tiny ledge is in your path. You could jump over it, but this world is 2d. Turn back 2d person...",
-            "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
+        self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
+                            "A large wall blocks your path...",
+                            "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
+                            "A tiny ledge is in your path. You could jump over it, but this world is 2d. Turn back 2d person...",
+                            "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
 
         self.moveComments = ["You have wandered into a desert.",
                              "A potato field surounds you.",
@@ -228,6 +229,10 @@ class compass:
         if (distMechanic < distance):
             point = mechanic.XY
             distance = distMechanic
+        distMechanic2 = self.distFinder(mechanic2.XY) # TODO: Make sure this functions
+        if (distMechanic2 < distance):
+            point = mechanic2.XY
+            distance = distMechanic2
         distTreasure = self.distFinder(treasure.XY)
         if (distTreasure < distance):
             point = treasure.XY
@@ -368,7 +373,7 @@ class mapStuff:
         self.mechanic = [-1, -1]
         self.treasure = [-1, -1]
 
-    def drawMap(self) -> None:
+    def drawMap(self) -> None: #TODO: add second mechanic to map
         self.digits = []
         self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         for i in range(11):
