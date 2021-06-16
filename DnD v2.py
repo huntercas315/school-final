@@ -153,15 +153,15 @@ class mechanicStats:
         # XY[0] is X, XY[1] is Y
 
     def attack(self) -> None:
-        target = player.health
+        targetHealth = player.health
         damage = randrange(self.attackMin, self.attackMax) + 1
         damage += self.attackBuff
-        target -= damage
-        if (target < 0):
-            target = 0
-        player.health = target
+        targetHealth -= damage
+        if (targetHealth < 0):
+            targetHealth = 0
+        player.health = targetHealth
 
-    def died(self):
+    def died(self) -> None:
         self.XY = [randrange(10) + 1, randrange(10) + 1]
         self.health = self.originHealth + 3
         self.originHealth = self.health
@@ -199,7 +199,7 @@ class comments:
                              "A cave is within sight, but it is guarded by a rabbit and you have no holy handgrenades on hand...",
                              "A swallow flies on the horizon, carrying coconuts to distant non-tropical lands."]
 
-        self.fightComments = ["*bonk*","*Bam*", "*Smack*", "*Bop*",
+        self.fightComments = ["*bonk*", "*Bam*", "*Smack*", "*Bop*",
                               "*Bing Bong*", "Onomatopoeia!", "*Attack Noises!*",
                               "*Procedural Noise Generation!*"]
 
@@ -417,18 +417,16 @@ maps = mapStuff()
 class combat:
     __slots__ = []
 
-    def fight(self, target: str) -> None:  #TODO: NEEDS REFACTOR - MAYBE
+    def fight(self, target: str) -> None:  # TODO: NEEDS REFACTOR - MAYBE
         targetHealth = self.healthFinder(target)
         # Player Attack
         targetHealth = player.attack(targetHealth)
-        #TODO: Add a function to set the targets health correctly
+        self.healthSetter(target, targetHealth)
         print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
         print(f"The Game Mechanic has {mechanic.health} health left.\n")
-        if (mechanic.health == 0):
+        if (targetHealth == 0):
             print("\n\n...The Game Mechanic has died...\n\n")
             mechanic.died()
-            mechanic.health += 3
-            mechanic.attackBuff += 1
             coinLoot = randrange(25, 75)
             print(f"You have gained {coinLoot} coins!\n")
             player.coins += coinLoot
@@ -438,22 +436,26 @@ class combat:
         while (timer != 0):
             timer -= 1
         # Game Mechanic Attack
-        playerHealth = player.health #TODO: just use the stats class's attack func
-        playerHealth = mechanic.attack(playerHealth)
-        player.health = playerHealth
+        mechanic.attack()
         print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
-        if (player.health < 0):
-            player.health = 0
         print(f"You have {player.health} health left.\n")
         if (player.health == 0):
             print("\n\n\n...You Died...\n\n\n")
             player.died()
+
     def healthFinder(self, target: str) -> int:
         if (target == "mechanic"):
             return mechanic.health
         elif (target == "mechanic2"):
-            #return #TODO: finish this return statement
-            pass #TODO: Add a second mechanic for this thing
+            # return #TODO: finish this return statement
+            pass  # TODO: Add a second mechanic for this thing
+
+    def healthSetter(self, target: str, targetHealth: int) -> None:
+        if (target == "mechanic"):
+            mechanic.health = targetHealth
+        elif (target == "mechanic2"):
+            #TODO: Finish this statement
+            pass  # TODO: Add a second mechanic for this thing
 
 
 combat = combat()
@@ -516,7 +518,7 @@ def move(XY: list) -> list:
         quitCheck = True
         return XY
     ###########
-    elif (direction == "beta"):  #TODO: BETA STUFF - REMOVE LATER
+    elif (direction == "beta"):  # TODO: BETA STUFF - REMOVE LATER
         ##### Beta stuff
         print(treasure.XY)
         print(mechanic.XY)
@@ -569,7 +571,7 @@ def encounterTreasure() -> None:
         player.XY = move(player.XY)
 
 
-def encounterMechanic() -> None:  #TODO: NEEDS REFACTOR - or does?
+def encounterMechanic() -> None:  # TODO: NEEDS REFACTOR - or does?
     maps.addLocation("mechanic")
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
@@ -588,10 +590,12 @@ def encounterMechanic() -> None:  #TODO: NEEDS REFACTOR - or does?
             player.XY = move(player.XY)
             break
 
-def coordCheck(XY: list) -> list: #TODO: Try to add more to prevent objects from overlapping
+
+def coordCheck(XY: list) -> list:  # TODO: Try to add more to prevent objects from overlapping
     while (XY == player.XY or XY == shop.location):
         XY = [randrange(10) + 1, randrange(10) + 1]
     return XY
+
 
 def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
