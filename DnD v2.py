@@ -415,39 +415,45 @@ maps = mapStuff()
 
 
 class combat:
-    __slots__ = [
-        "encounter"]
+    __slots__ = []
 
-    def __init__(self):
-        self.encounter = "none"  # MAY NOT BE NEEDED
-
-    def fightAll(self, objTarget: str) -> None:
-        if (objTarget == "mechanic"):
-            self.encounter = "mechanic"
-            mechanic.health = self.fightMechanic(mechanic.health)
-            self.dieCheck(mechanic.health, "mechanic")
-            if (mechanic.health <= 0):
-                return
-            mechanic.attack()
-
-    def fightMechanic(self, targetHealth: int) -> int:  # The game mechanic's fighting function #NEEDS REFACTOR - MAYBE
+    def fight(self, target: str) -> None:  #TODO: NEEDS REFACTOR - MAYBE
+        targetHealth = self.healthFinder(target)
         # Player Attack
         targetHealth = player.attack(targetHealth)
-        if (targetHealth <= 0):
-            return targetHealth
+        #TODO: Add a function to set the targets health correctly
         print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
-        print(f"The Game Mechanic has {targetHealth} health left.\n")
-        return targetHealth
-
-    def dieCheck(self, targetHealth: int, target: str) -> None:
-        if (target == "mechanic"):
-            mechanic.died()
+        print(f"The Game Mechanic has {mechanic.health} health left.\n")
+        if (mechanic.health == 0):
             print("\n\n...The Game Mechanic has died...\n\n")
+            mechanic.died()
+            mechanic.health += 3
+            mechanic.attackBuff += 1
             coinLoot = randrange(25, 75)
             print(f"You have gained {coinLoot} coins!\n")
             player.coins += coinLoot
-        elif (target == "player"):
+            return
+        # The waiting/timer part
+        timer = 9999999
+        while (timer != 0):
+            timer -= 1
+        # Game Mechanic Attack
+        playerHealth = player.health #TODO: just use the stats class's attack func
+        playerHealth = mechanic.attack(playerHealth)
+        player.health = playerHealth
+        print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
+        if (player.health < 0):
+            player.health = 0
+        print(f"You have {player.health} health left.\n")
+        if (player.health == 0):
+            print("\n\n\n...You Died...\n\n\n")
             player.died()
+    def healthFinder(self, target: str) -> int:
+        if (target == "mechanic"):
+            return mechanic.health
+        elif (target == "mechanic2"):
+            #return #TODO: finish this return statement
+            pass #TODO: Add a second mechanic for this thing
 
 
 combat = combat()
@@ -510,7 +516,7 @@ def move(XY: list) -> list:
         quitCheck = True
         return XY
     ###########
-    elif (direction == "beta"):  # BETA STUFF - REMOVE LATER
+    elif (direction == "beta"):  #TODO: BETA STUFF - REMOVE LATER
         ##### Beta stuff
         print(treasure.XY)
         print(mechanic.XY)
@@ -563,7 +569,7 @@ def encounterTreasure() -> None:
         player.XY = move(player.XY)
 
 
-def encounterMechanic() -> None:  # NEEDS REFACTOR - or does?
+def encounterMechanic() -> None:  #TODO: NEEDS REFACTOR - or does?
     maps.addLocation("mechanic")
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
@@ -572,7 +578,7 @@ def encounterMechanic() -> None:  # NEEDS REFACTOR - or does?
         print()
         if (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
-            combat.fightAll("mechanic")
+            combat.fight("mechanic")
             if (player.XY != mechanic.XY):
                 break
         elif (action == "heal" or action == "HEAL"):
@@ -582,32 +588,10 @@ def encounterMechanic() -> None:  # NEEDS REFACTOR - or does?
             player.XY = move(player.XY)
             break
 
-
-############################################ The remains of the old fighting function
-# The waiting/timer part
-################################
-##    timer = 9999999
-##    while (timer != 0):
-##        timer -= 1
-##    #Game Mechanic Attack
-##    playerHealth = player.health
-##    playerHealth = mechanic.attack(playerHealth) #MAKE A SEPERATE PART. Player object stuff can stay
-##    player.health = playerHealth
-##    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
-##    if (player.health < 0):
-##        player.health = 0
-##    print(f"You have {player.health} health left.\n")
-##    if (player.health == 0):
-##        print("\n\n\n...You Died...\n\n\n")
-##        player.died()
-###########################################
-
-
-def coordCheck(XY: list) -> list:
+def coordCheck(XY: list) -> list: #TODO: Try to add more to prevent objects from overlapping
     while (XY == player.XY or XY == shop.location):
         XY = [randrange(10) + 1, randrange(10) + 1]
     return XY
-
 
 def help() -> None:
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -637,7 +621,7 @@ def help() -> None:
 
 
 def showCoords() -> None:  # Informs the player of their location after movement
-    if encounterCheckBool():  # Check is player is at an encounter and whether to continue the function
+    if encounterCheckBool():  # Checks if the player is at an encounter and whether to continue the function
         return
     if options.showMap:  # shows the map if enabled
         maps.drawMap()
@@ -687,7 +671,7 @@ while True:
         break
     # Checks for encounters
     encounterCheck()
-    # The exit/quit part
+    # Another exit/quit part
     if quitCheck:
         break
     # The general movement part
