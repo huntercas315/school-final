@@ -384,7 +384,32 @@ class mapStuff:
 
 maps = mapStuff()
 
-     
+class combat:
+    __slots__ = [
+        "encounter"]
+    def __init__(self):
+        self.encounter = "none" #MAY NOT BE NEEDED
+    def fightAll(self, objTarget: str):
+        if (objTarget == "player"):
+            ##player.health = #NEEDS OWN FUNC
+        if (objTarget == "mechanic"):
+            mechanic.health = fightMechanic(mechanic.health)
+    def fightMechanic(self, targetHealth: int) -> int: #The game mechanic's fighting function #NEEDS REFACTOR - MAYBE
+        #Player Attack
+        targetHealth = player.attack(targetHealth)
+        print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
+        print(f"The Game Mechanic has {targetHealth} health left.\n")
+        return targetHealth
+    def dieCheck(self, targetHealth: int, target: str) -> int:
+        if (targetHealth == 0):
+            if (target == "mechanic"):
+                mechanic.died()
+            elif (target == "player"):
+                player.died()
+combat = combat()
+
+
+
 
 def move(XY: list) -> list:
     global showMap
@@ -475,25 +500,6 @@ def borderMechanic(XY: int) -> int:
     else:
         return XY
 
-def encounterMechanic() -> None: #NEEDS REFACTOR - or does?
-    maps.addLocation("mechanic")
-    print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
-    action = "f"
-    while True:
-        action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
-        print()
-        if (action == "f" or action == "F"):
-            print("\nYou attack the Game Mechanic...\n")
-            fight(mechanic.health)
-            if (player.XY != mechanic.XY):
-                break
-        elif (action == "heal" or action == "HEAL"):
-            player.heal()
-        else:
-            print("\nYou scamper, giving the Flash a run for his money...\n")
-            player.XY = move(player.XY)
-            break
-
 def encounterTreasure() -> None:
     maps.addLocation("treasure")
     print("You have found a treasure chest\n")
@@ -512,35 +518,54 @@ def encounterTreasure() -> None:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
-def fight(targetHealth) -> None: #NEEDS REFACTOR - MAYBE
+def encounterMechanic() -> None: #NEEDS REFACTOR - or does?
+    maps.addLocation("mechanic")
+    print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
+    action = "f"
+    while True:
+        action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
+        print()
+        if (action == "f" or action == "F"):
+            print("\nYou attack the Game Mechanic...\n")
+            combat.fightAll("mechanic")
+            if (player.XY != mechanic.XY):
+                break
+        elif (action == "heal" or action == "HEAL"):
+            player.heal()
+        else:
+            print("\nYou scamper, giving the Flash a run for his money...\n")
+            player.XY = move(player.XY)
+            break
+
+def fightMechanic(targetHealth) -> None: #The game mechanic's fighting function #NEEDS REFACTOR - MAYBE
     #Player Attack
     targetHealth = player.attack(targetHealth)
     print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
     print(f"The Game Mechanic has {targetHealth} health left.\n")
-    if (targetHealth == 0):
-        print("\n\n...The Game Mechanic has died...\n\n")#NEED TO CHANGE - Maybe global encounter var and use to decide which die() func to use?
-        mechanic.died()
-        mechanic.health += 3
-        mechanic.attackBuff += 1
-        coinLoot = randrange(25,75)
-        print(f"You have gained {coinLoot} coins!\n")
-        player.coins += coinLoot
-        return
+##    if (targetHealth == 0): 
+##        print("\n\n...The Game Mechanic has died...\n\n")#NEED TO CHANGE - Maybe global encounter var and use to decide which die() func to use?
+##        mechanic.died()
+##        coinLoot = randrange(25,75)
+##        print(f"You have gained {coinLoot} coins!\n")
+##        player.coins += coinLoot
+##        return
+    return targetHealth
     #The waiting/timer part
-    timer = 9999999
-    while (timer != 0):
-        timer -= 1
-    #Game Mechanic Attack
-    playerHealth = player.health
-    playerHealth = mechanic.attack(playerHealth) #MAKE A SEPERATE PART. Player object stuff can stay
-    player.health = playerHealth
-    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
-    if (player.health < 0):
-        player.health = 0
-    print(f"You have {player.health} health left.\n")
-    if (player.health == 0):
-        print("\n\n\n...You Died...\n\n\n")
-        player.died()
+    ################################
+##    timer = 9999999
+##    while (timer != 0):
+##        timer -= 1
+##    #Game Mechanic Attack
+##    playerHealth = player.health
+##    playerHealth = mechanic.attack(playerHealth) #MAKE A SEPERATE PART. Player object stuff can stay
+##    player.health = playerHealth
+##    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
+##    if (player.health < 0):
+##        player.health = 0
+##    print(f"You have {player.health} health left.\n")
+##    if (player.health == 0):
+##        print("\n\n\n...You Died...\n\n\n")
+##        player.died()
 
 def coordCheck(XY: list) -> list:
     while (XY == player.XY or XY == shop.location):
