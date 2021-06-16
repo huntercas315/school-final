@@ -317,6 +317,21 @@ class mapStuff:
             for u in z:
                 lineString += u
             print(lineString)
+    def addLocation(self, location: str) -> None:
+        if (location == "shop"):
+            if (self.shop == [-1,-1]):
+                print("\nYour map has been updated\n")
+                self.shop = shop.location
+        elif (location == "mechanic"):
+            if (self.mechanic == [-1,-1]):
+                print("\nYour map has been updated\n")
+                self.mechanic = mechanic.XY
+        elif ( location == "treasure"):
+            if (self.treasure == [-1,-1]):
+                print("\nYour map has been updated\n")
+                self.treasure = treasure.XY
+        else:
+            return
 
 maps = mapStuff()
 
@@ -406,9 +421,9 @@ def borderMechanic(XY: int) -> int:
     else:
         return XY
 
-def encounterMechanic() -> None: #NEEDS REFACTOR
+def encounterMechanic() -> None: #NEEDS REFACTOR - or does?
+    maps.addLocation("mechanic")
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
-    maps.mechanic = mechanic.XY
     action = "f"
     while True:
         action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
@@ -426,8 +441,8 @@ def encounterMechanic() -> None: #NEEDS REFACTOR
             break
 
 def encounterTreasure() -> None:
+    maps.addLocation("treasure")
     print("You have found a treasure chest\n")
-    maps.treasure = treasure.XY
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o" or action == "O"):
         coinToss = randrange(1,100)
@@ -528,7 +543,7 @@ def welcomePrints() -> None:
 
 def encounterCheck() -> None: #Triggers events
     if (player.XY == shop.location):
-        maps.shop = shop.location
+        maps.addLocation("shop")
         shop.startStore()
     elif (player.XY == mechanic.XY):
         encounterMechanic()
