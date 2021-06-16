@@ -43,6 +43,7 @@ options = options(False, True)
 
 class stats:
     __slots__ = [
+            "icon",
             "health",
             "maxHealth",
             "originHealth",
@@ -52,7 +53,8 @@ class stats:
             "heals",
             "coins",
             "XY"]
-    def __init__(self, health: int, attackMin: int, attackMax: int, heals: int, coins: int):
+    def __init__(self, icon: str, health: int, attackMin: int, attackMax: int, heals: int, coins: int):
+        self.icon = icon
         self.health = health
         self.maxHealth = health
         self.originHealth = health
@@ -67,10 +69,13 @@ class stats:
         damage = randrange(self.attackMin, self.attackMax)+1
         damage += self.attackBuff
         target -= damage
+        if (target < 0):
+            target = 0
         return target
     def died(self):
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth
+        self.maxHealth = self.originHealth
         self.attackBuff = 0
         self.heals = 0
         self.coins = 0
@@ -111,9 +116,46 @@ class stats:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-player = stats(10, 0, 3, 2, 50)
-mechanic = stats(5, 0, 2, 0, 0)
-treasure = stats(0, 0, 0, 0, 0)
+player = stats("@", 10, 0, 3, 2, 50)
+treasure = stats("=", 0, 0, 0, 0, 0)
+
+
+class mechanicStats:
+    __slots__ = [
+            "icon",
+            "health",
+            "originHealth",
+            "attackMin",
+            "attackMax",
+            "attackBuff",
+            "XY"]
+    def __init__(self, icon: str, health: int, attackMin: int, attackMax: int):
+        self.icon = icon
+        self.health = health
+        self.originHealth = health
+        self.attackMin = attackMin
+        self.attackMax = attackMax
+        self.attackBuff = 0
+        self.XY = [randrange(10)+1, randrange(10)+1]
+        #XY[0] is X, XY[1] is Y
+    def attack(self) -> None:
+        target = player.health
+        damage = randrange(self.attackMin, self.attackMax)+1
+        damage += self.attackBuff
+        target -= damage
+        if (target < 0):
+            target = 0
+        player.health = target
+    def died(self):
+        self.XY = [randrange(10)+1, randrange(10)+1]
+        self.health = self.originHealth + 3
+        self.originHealth = self.health
+        self.attackBuff += 1
+        maps.mechanic = [-1,-1]
+        
+mechanic = mechanicStats("!", 5, 0, 2)
+
+
 
 class comments:
     __slots__ = [
@@ -121,7 +163,6 @@ class comments:
         "moveComments",
         "fightComments"]
     def __init__(self):
-        
         self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
             "A large wall blocks your path...",
             "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
@@ -129,12 +170,21 @@ class comments:
             "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
 
         self.moveComments = ["You have wandered into a desert.",
-            "A potato field surounds you.", "An abandoned city looms before you, silent and empty", "You have chanced upon an incredibly beautiful field, if only graphics were implemented...",
-            "You have stepped into an apple orchard.", "You have stumbled across the wonderous Screaming Goat! Say goodbye to your sanity!",
-            "The entrance to a dungeon lies before you, but you are claustrophobic and cannot enter for valid reasons"]
+            "A potato field surounds you.",
+            "An abandoned city looms before you, silent and empty.",
+            "You have chanced upon an incredibly beautiful field, if only graphics were implemented...",
+            "You have stepped into an apple orchard.",
+            "You have stumbled across the wonderous Screaming Goat! Say goodbye to your sanity!",
+            "The entrance to a dungeon lies before you, but you are claustrophobic and cannot enter for valid reasons.",
+            "An abandoned tower blocks out the sky above you.",
+            "A coconut lies in the middle of the path, not a swallow in sight. It would be best to move on...",
+            "You come across some peasants in a field, they seem to be arguing about the constitution.",
+            "A cave is within sight, but it is guarded by a rabbit and you have no holy handgrenades on hand...",
+            "A swallow flies on the horizon, carrying coconuts to distant non-tropical lands."]
         
         self.fightComments = ["*bonk*",
-            "*Bam*", "*Smack*", "*Bop*", "*Bing Bong*", "onomatopoeia!", "*Attack Noises!*"]
+            "*Bam*", "*Smack*", "*Bop*", "*Bing Bong*", "Onomatopoeia!", "*Attack Noises!*",
+            "*Procedural Noise Generation!*"]
         
     def commentPrint(self, target: list) -> str:
         length = len(target)
@@ -299,13 +349,13 @@ class mapStuff:
             digitTemp = ["|"]
             for e in range(11):
                 if (player.XY[1] == i and player.XY[0] == e):
-                    digitTemp.append("[@]")
+                    digitTemp.append(f"[{player.icon}]")
                 elif (self.shop[1] == i and self.shop[0] == e):
                     digitTemp.append("[$]")
                 elif (self.treasure[1] == i and self.treasure[0] == e):
-                    digitTemp.append("[=]")
+                    digitTemp.append(f"[{treasure.icon}]")
                 elif (self.mechanic[1] == i and self.mechanic[0] == e):
-                    digitTemp.append("[!]")
+                    digitTemp.append(f"[{mechanic.icon}]")
                 else:
                     digitTemp.append("[_]")
             digitTemp.append("|")
@@ -317,10 +367,58 @@ class mapStuff:
             for u in z:
                 lineString += u
             print(lineString)
+    def addLocation(self, location: str) -> None:
+        if (location == "shop"):
+            if (self.shop == [-1,-1]):
+                print("\nYour map has been updated\n")
+                self.shop = shop.location
+        elif (location == "mechanic"):
+            if (self.mechanic == [-1,-1]):
+                print("\nYour map has been updated\n")
+                self.mechanic = mechanic.XY
+        elif ( location == "treasure"):
+            if (self.treasure == [-1,-1]):
+                print("\nYour map has been updated\n")
+                self.treasure = treasure.XY
+        else:
+            return
 
 maps = mapStuff()
 
-     
+class combat:
+    __slots__ = [
+        "encounter"]
+    def __init__(self):
+        self.encounter = "none" #MAY NOT BE NEEDED
+    def fightAll(self, objTarget: str) -> None:
+        if (objTarget == "mechanic"):
+            self.encounter = "mechanic"
+            mechanic.health = fightMechanic(mechanic.health)
+            dieCheck(mechanic.health, "mechanic")
+            if (mechanic.health <= 0):
+                return
+            mechanic.attack()
+    def fightMechanic(self, targetHealth: int) -> int: #The game mechanic's fighting function #NEEDS REFACTOR - MAYBE
+        #Player Attack
+        targetHealth = player.attack(targetHealth)
+        if (targetHealth <= 0):
+            return targetHealth
+        print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
+        print(f"The Game Mechanic has {targetHealth} health left.\n")
+        return targetHealth
+    def dieCheck(self, targetHealth: int, target: str) -> None:
+        if (target == "mechanic"):
+            mechanic.died()
+            print("\n\n...The Game Mechanic has died...\n\n")
+            coinLoot = randrange(25,75)
+            print(f"You have gained {coinLoot} coins!\n")
+            player.coins += coinLoot
+        elif (target == "player"):
+            player.died()
+combat = combat()
+
+
+
 
 def move(XY: list) -> list:
     global showMap
@@ -391,6 +489,11 @@ def move(XY: list) -> list:
     elif (direction == "beta3"):
         player.upgrade()
         return XY
+    elif (direction == "beta4"):
+        maps.addLocation("mechanic")
+        maps.addLocation("treasure")
+        maps.addLocation("shop")
+        return XY
     ##########
     else:
         help()
@@ -406,28 +509,9 @@ def borderMechanic(XY: int) -> int:
     else:
         return XY
 
-def encounterMechanic() -> None: #NEEDS REFACTOR
-    print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
-    maps.mechanic = mechanic.XY
-    action = "f"
-    while True:
-        action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
-        print()
-        if (action == "f" or action == "F"):
-            print("\nYou attack the Game Mechanic...\n")
-            fight()
-            if (player.XY != mechanic.XY):
-                break
-        elif (action == "heal" or action == "HEAL"):
-            player.heal()
-        else:
-            print("\nYou scamper, giving the Flash a run for his money...\n")
-            player.XY = move(player.XY)
-            break
-
 def encounterTreasure() -> None:
+    maps.addLocation("treasure")
     print("You have found a treasure chest\n")
-    maps.treasure = treasure.XY
     action = str(input("What will you do? (o)pen or (r)un: "))
     if (action == "o" or action == "O"):
         coinToss = randrange(1,100)
@@ -443,39 +527,49 @@ def encounterTreasure() -> None:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
-def fight() -> None: #NEEDS REFACTOR - MAYBE
-    #Player Attack
-    mechanicHealth = mechanic.health
-    mechanicHealth = player.attack(mechanicHealth)
-    mechanic.health = mechanicHealth
-    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
-    if (mechanic.health < 0):
-        mechanic.health = 0
-    print(f"The Game Mechanic has {mechanic.health} health left.\n")
-    if (mechanic.health == 0):
-        print("\n\n...The Game Mechanic has died...\n\n")
-        mechanic.died()
-        mechanic.health += 3
-        mechanic.attackBuff += 1
-        coinLoot = randrange(25,75)
-        print(f"You have gained {coinLoot} coins!\n")
-        player.coins += coinLoot
-        return
+def encounterMechanic() -> None: #NEEDS REFACTOR - or does?
+    maps.addLocation("mechanic")
+    print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
+    action = "f"
+    while True:
+        action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
+        print()
+        if (action == "f" or action == "F"):
+            print("\nYou attack the Game Mechanic...\n")
+            combat.fightAll("mechanic")
+            if (player.XY != mechanic.XY):
+                break
+        elif (action == "heal" or action == "HEAL"):
+            player.heal()
+        else:
+            print("\nYou scamper, giving the Flash a run for his money...\n")
+            player.XY = move(player.XY)
+            break
+
+
+
+
+############################################ The remains of the old fighting function
     #The waiting/timer part
-    timer = 9999999
-    while (timer != 0):
-        timer -= 1
-    #Game Mechanic Attack
-    playerHealth = player.health
-    playerHealth = mechanic.attack(playerHealth)
-    player.health = playerHealth
-    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
-    if (player.health < 0):
-        player.health = 0
-    print(f"You have {player.health} health left.\n")
-    if (player.health == 0):
-        print("\n\n\n...You Died...\n\n\n")
-        player.died()
+    ################################
+##    timer = 9999999
+##    while (timer != 0):
+##        timer -= 1
+##    #Game Mechanic Attack
+##    playerHealth = player.health
+##    playerHealth = mechanic.attack(playerHealth) #MAKE A SEPERATE PART. Player object stuff can stay
+##    player.health = playerHealth
+##    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
+##    if (player.health < 0):
+##        player.health = 0
+##    print(f"You have {player.health} health left.\n")
+##    if (player.health == 0):
+##        print("\n\n\n...You Died...\n\n\n")
+##        player.died()
+###########################################
+
+
+
 
 def coordCheck(XY: list) -> list:
     while (XY == player.XY or XY == shop.location):
@@ -528,7 +622,7 @@ def welcomePrints() -> None:
 
 def encounterCheck() -> None: #Triggers events
     if (player.XY == shop.location):
-        maps.shop = shop.location
+        maps.addLocation("shop")
         shop.startStore()
     elif (player.XY == mechanic.XY):
         encounterMechanic()
