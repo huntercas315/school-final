@@ -69,6 +69,8 @@ class stats:
         damage = randrange(self.attackMin, self.attackMax)+1
         damage += self.attackBuff
         target -= damage
+        if (target < 0):
+            target = 0
         return target
     def died(self):
         self.XY = [randrange(10)+1, randrange(10)+1]
@@ -115,8 +117,44 @@ class stats:
         print()
 
 player = stats("@", 10, 0, 3, 2, 50)
-mechanic = stats("!", 5, 0, 2, 0, 0)
 treasure = stats("=", 0, 0, 0, 0, 0)
+
+
+class mechanicStats:
+    __slots__ = [
+            "icon",
+            "health",
+            "originHealth",
+            "attackMin",
+            "attackMax",
+            "attackBuff",
+            "XY"]
+    def __init__(self, icon: str, health: int, attackMin: int, attackMax: int):
+        self.icon = icon
+        self.health = health
+        self.originHealth = health
+        self.attackMin = attackMin
+        self.attackMax = attackMax
+        self.attackBuff = 0
+        self.XY = [randrange(10)+1, randrange(10)+1]
+        #XY[0] is X, XY[1] is Y
+    def attack(self, target) -> int:
+        damage = randrange(self.attackMin, self.attackMax)+1
+        damage += self.attackBuff
+        target -= damage
+        if (target < 0):
+            target = 0
+        return target
+    def died(self):
+        self.XY = [randrange(10)+1, randrange(10)+1]
+        self.health = self.originHealth + 3
+        self.originHealth = self.health
+        self.attackBuff += 1
+        maps.mechanic = [-1,-1]
+        
+mechanic = mechanicStats("!", 5, 0, 2)
+
+
 
 class comments:
     __slots__ = [
@@ -446,7 +484,7 @@ def encounterMechanic() -> None: #NEEDS REFACTOR - or does?
         print()
         if (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
-            fight()
+            fight(mechanic.health)
             if (player.XY != mechanic.XY):
                 break
         elif (action == "heal" or action == "HEAL"):
@@ -474,17 +512,13 @@ def encounterTreasure() -> None:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
-def fight() -> None: #NEEDS REFACTOR - MAYBE
+def fight(targetHealth) -> None: #NEEDS REFACTOR - MAYBE
     #Player Attack
-    mechanicHealth = mechanic.health
-    mechanicHealth = player.attack(mechanicHealth)
-    mechanic.health = mechanicHealth
+    targetHealth = player.attack(targetHealth)
     print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
-    if (mechanic.health < 0):
-        mechanic.health = 0
-    print(f"The Game Mechanic has {mechanic.health} health left.\n")
-    if (mechanic.health == 0):
-        print("\n\n...The Game Mechanic has died...\n\n")
+    print(f"The Game Mechanic has {targetHealth} health left.\n")
+    if (targetHealth == 0):
+        print("\n\n...The Game Mechanic has died...\n\n")#NEED TO CHANGE - Maybe global encounter var and use to decide which die() func to use?
         mechanic.died()
         mechanic.health += 3
         mechanic.attackBuff += 1
@@ -498,7 +532,7 @@ def fight() -> None: #NEEDS REFACTOR - MAYBE
         timer -= 1
     #Game Mechanic Attack
     playerHealth = player.health
-    playerHealth = mechanic.attack(playerHealth)
+    playerHealth = mechanic.attack(playerHealth) #MAKE A SEPERATE PART. Player object stuff can stay
     player.health = playerHealth
     print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
     if (player.health < 0):
