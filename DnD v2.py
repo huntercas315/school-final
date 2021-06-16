@@ -138,13 +138,14 @@ class mechanicStats:
         self.attackBuff = 0
         self.XY = [randrange(10)+1, randrange(10)+1]
         #XY[0] is X, XY[1] is Y
-    def attack(self, target) -> int:
+    def attack(self) -> None:
+        target = player.health
         damage = randrange(self.attackMin, self.attackMax)+1
         damage += self.attackBuff
         target -= damage
         if (target < 0):
             target = 0
-        return target
+        player.health = target
     def died(self):
         self.XY = [randrange(10)+1, randrange(10)+1]
         self.health = self.originHealth + 3
@@ -390,22 +391,31 @@ class combat:
     def __init__(self):
         self.encounter = "none" #MAY NOT BE NEEDED
     def fightAll(self, objTarget: str):
-        if (objTarget == "player"):
-            ##player.health = #NEEDS OWN FUNC
         if (objTarget == "mechanic"):
+            self.encounter = "mechanic"
             mechanic.health = fightMechanic(mechanic.health)
+            mechanic.attack()
     def fightMechanic(self, targetHealth: int) -> int: #The game mechanic's fighting function #NEEDS REFACTOR - MAYBE
         #Player Attack
         targetHealth = player.attack(targetHealth)
+        died = dieCheck(targetHealth, self.encounter)
+        if died:
+            return targetHealth
         print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
         print(f"The Game Mechanic has {targetHealth} health left.\n")
         return targetHealth
-    def dieCheck(self, targetHealth: int, target: str) -> int:
-        if (targetHealth == 0):
-            if (target == "mechanic"):
-                mechanic.died()
-            elif (target == "player"):
-                player.died()
+    def dieCheck(self, targetHealth: int, target: str) -> bool:
+        if (targetHealth != 0):
+            return False
+        if (target == "mechanic"):
+            mechanic.died()
+            print("\n\n...The Game Mechanic has died...\n\n")
+            coinLoot = randrange(25,75)
+            print(f"You have gained {coinLoot} coins!\n")
+            player.coins += coinLoot
+            return True
+        elif (target == "player"):
+            player.died()
 combat = combat()
 
 
@@ -537,19 +547,10 @@ def encounterMechanic() -> None: #NEEDS REFACTOR - or does?
             player.XY = move(player.XY)
             break
 
-def fightMechanic(targetHealth) -> None: #The game mechanic's fighting function #NEEDS REFACTOR - MAYBE
-    #Player Attack
-    targetHealth = player.attack(targetHealth)
-    print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
-    print(f"The Game Mechanic has {targetHealth} health left.\n")
-##    if (targetHealth == 0): 
-##        print("\n\n...The Game Mechanic has died...\n\n")#NEED TO CHANGE - Maybe global encounter var and use to decide which die() func to use?
-##        mechanic.died()
-##        coinLoot = randrange(25,75)
-##        print(f"You have gained {coinLoot} coins!\n")
-##        player.coins += coinLoot
-##        return
-    return targetHealth
+
+
+
+############################################ The remains of the old fighting function
     #The waiting/timer part
     ################################
 ##    timer = 9999999
@@ -566,6 +567,10 @@ def fightMechanic(targetHealth) -> None: #The game mechanic's fighting function 
 ##    if (player.health == 0):
 ##        print("\n\n\n...You Died...\n\n\n")
 ##        player.died()
+###########################################
+
+
+
 
 def coordCheck(XY: list) -> list:
     while (XY == player.XY or XY == shop.location):
