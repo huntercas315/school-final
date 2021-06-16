@@ -129,12 +129,21 @@ class comments:
             "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
 
         self.moveComments = ["You have wandered into a desert.",
-            "A potato field surounds you.", "An abandoned city looms before you, silent and empty", "You have chanced upon an incredibly beautiful field, if only graphics were implemented...",
-            "You have stepped into an apple orchard.", "You have stumbled across the wonderous Screaming Goat! Say goodbye to your sanity!",
-            "The entrance to a dungeon lies before you, but you are claustrophobic and cannot enter for valid reasons"]
+            "A potato field surounds you.",
+            "An abandoned city looms before you, silent and empty.",
+            "You have chanced upon an incredibly beautiful field, if only graphics were implemented...",
+            "You have stepped into an apple orchard.",
+            "You have stumbled across the wonderous Screaming Goat! Say goodbye to your sanity!",
+            "The entrance to a dungeon lies before you, but you are claustrophobic and cannot enter for valid reasons.",
+            "An abandoned tower blocks out the sky above you.",
+            "A coconut lies in the middle of the path, not a swallow in sight. It would be best to move on...",
+            "You come across some peasants in a field, they seem to be arguing about the constitution.",
+            "A cave is within sight, but it is guarded by a rabbit and you have no holy handgrenades on hand...",
+            "A swallow flies on the horizon, carrying coconuts to distant non-tropical lands."]
         
         self.fightComments = ["*bonk*",
-            "*Bam*", "*Smack*", "*Bop*", "*Bing Bong*", "onomatopoeia!", "*Attack Noises!*"]
+            "*Bam*", "*Smack*", "*Bop*", "*Bing Bong*", "Onomatopoeia!", "*Attack Noises!*",
+            "*Procedural Noise Generation!*"]
         
     def commentPrint(self, target: list) -> str:
         length = len(target)
