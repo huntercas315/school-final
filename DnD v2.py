@@ -43,6 +43,7 @@ options = options(False, True)
 
 class stats:
     __slots__ = [
+            "icon",
             "health",
             "maxHealth",
             "originHealth",
@@ -52,7 +53,8 @@ class stats:
             "heals",
             "coins",
             "XY"]
-    def __init__(self, health: int, attackMin: int, attackMax: int, heals: int, coins: int):
+    def __init__(self, icon: str, health: int, attackMin: int, attackMax: int, heals: int, coins: int):
+        self.icon = icon
         self.health = health
         self.maxHealth = health
         self.originHealth = health
@@ -111,9 +113,9 @@ class stats:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-player = stats(10, 0, 3, 2, 50)
-mechanic = stats(5, 0, 2, 0, 0)
-treasure = stats(0, 0, 0, 0, 0)
+player = stats("@", 10, 0, 3, 2, 50)
+mechanic = stats("!", 5, 0, 2, 0, 0)
+treasure = stats("=", 0, 0, 0, 0, 0)
 
 class comments:
     __slots__ = [
@@ -121,7 +123,6 @@ class comments:
         "moveComments",
         "fightComments"]
     def __init__(self):
-        
         self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
             "A large wall blocks your path...",
             "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
@@ -308,13 +309,13 @@ class mapStuff:
             digitTemp = ["|"]
             for e in range(11):
                 if (player.XY[1] == i and player.XY[0] == e):
-                    digitTemp.append("[@]")
+                    digitTemp.append(f"[{player.icon}]")
                 elif (self.shop[1] == i and self.shop[0] == e):
                     digitTemp.append("[$]")
                 elif (self.treasure[1] == i and self.treasure[0] == e):
-                    digitTemp.append("[=]")
+                    digitTemp.append(f"[{treasure.icon}]")
                 elif (self.mechanic[1] == i and self.mechanic[0] == e):
-                    digitTemp.append("[!]")
+                    digitTemp.append(f"[{mechanic.icon}]")
                 else:
                     digitTemp.append("[_]")
             digitTemp.append("|")
@@ -414,6 +415,11 @@ def move(XY: list) -> list:
         return XY
     elif (direction == "beta3"):
         player.upgrade()
+        return XY
+    elif (direction == "beta4"):
+        maps.addLocation("mechanic")
+        maps.addLocation("treasure")
+        maps.addLocation("shop")
         return XY
     ##########
     else:
