@@ -390,30 +390,29 @@ class combat:
         "encounter"]
     def __init__(self):
         self.encounter = "none" #MAY NOT BE NEEDED
-    def fightAll(self, objTarget: str):
+    def fightAll(self, objTarget: str) -> None:
         if (objTarget == "mechanic"):
             self.encounter = "mechanic"
             mechanic.health = fightMechanic(mechanic.health)
+            dieCheck(mechanic.health, "mechanic")
+            if (mechanic.health <= 0):
+                return
             mechanic.attack()
     def fightMechanic(self, targetHealth: int) -> int: #The game mechanic's fighting function #NEEDS REFACTOR - MAYBE
         #Player Attack
         targetHealth = player.attack(targetHealth)
-        died = dieCheck(targetHealth, self.encounter)
-        if died:
+        if (targetHealth <= 0):
             return targetHealth
         print(comment.commentPrint(comment.fightComments), "\n") #Attack Comment
         print(f"The Game Mechanic has {targetHealth} health left.\n")
         return targetHealth
-    def dieCheck(self, targetHealth: int, target: str) -> bool:
-        if (targetHealth != 0):
-            return False
+    def dieCheck(self, targetHealth: int, target: str) -> None:
         if (target == "mechanic"):
             mechanic.died()
             print("\n\n...The Game Mechanic has died...\n\n")
             coinLoot = randrange(25,75)
             print(f"You have gained {coinLoot} coins!\n")
             player.coins += coinLoot
-            return True
         elif (target == "player"):
             player.died()
 combat = combat()
