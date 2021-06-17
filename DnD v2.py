@@ -4,6 +4,42 @@ from random import randrange
 quitCheck = False
 
 
+class help:
+    def helpOpening(self) -> None:
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Help And Intstructions:\n")
+        print("(m)ovement Instructions")
+        print("(map) Instructions")
+        print("(e)ncounter Instructions")
+        print("(s)hop Instructions")
+        print("\nGeneral Tips:")
+        print("Use (options) to open the options menu,")
+        print("Use (help) to access these tips,")
+        print("Use (exit) to exit the game.")
+        print("\n(done)")
+        page = str(input("Which Page: "))
+        pageSelection(page)
+
+    def pageSelection(self, page: str) -> None:
+        if (page == "m" or page == "M"):
+            pass
+        elif (page == "map" or page == "MAP"):
+            pass
+        elif (page == "e" or page == "E"):
+            pass
+        elif (page == "s" or page == "S"):
+            pass
+        else:
+            pass
+    def movementPage(self) -> None:
+        pass
+    def mapPage(self) -> None:
+        pass
+    def encounterPage(self) -> None:
+        pass
+    def shopPage(self) -> None:
+        pass
+
 class options:
     __slots__ = [
         "showMap",
@@ -667,7 +703,7 @@ def help() -> None:
     print("Use (stats) to view your stats.\n")
     # Add general move() instructions above
     print("Map Tips:\n")
-    print("Use (m) to view the map,")
+    print("Use (m) to view the map outside of an encounter,")
     print("When you encounter important places or things, your map will update their location,")
     print(f'You are represented by the "{player.icon}" symbol on the map,')
     print('The store is represented by the "$" symbol,')
