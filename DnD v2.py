@@ -284,6 +284,7 @@ class shop:
         "healsPrice",
         "upgrades",
         "upgradesPrice",
+        "iconPrice",
         "selections"]
 
     def __init__(self, heals: int, upgrades: int):
@@ -292,10 +293,11 @@ class shop:
         self.healsPrice = 50
         self.upgrades = upgrades
         self.upgradesPrice = 125
-        self.selections = ["done", "DONE", "h", "H", "u", "U"]
+        self.iconPrice = 100
+        self.selections = ["done", "DONE", "h", "H", "u", "U", "i", "I"]
 
     def startStore(self) -> None:
-        enter = input("\n\nYou have found the shop, enter? (y)/(n): ")
+        enter = input("\nYou have found the shop, enter? (y)/(n): ")
         if (enter == "y" or enter == "Y"):
             self.openStore()
         else:
@@ -307,6 +309,7 @@ class shop:
         print("Shop:")
         print(f"    (h)ealing items | {self.healsPrice} COINS  | Stock: {self.heals}")
         print(f"    (u)pgrades      | {self.upgradesPrice} COINS | Stock: {self.upgrades}")
+        print(f"    (i)con change   | {self.iconPrice} COINS | Stock: Theoretically Infinite")
         print()
         print("    (done)")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -355,6 +358,17 @@ class shop:
                 buff = randrange(1, 2)
                 player.attackBuff += buff
                 print(f"\nYou have buffed your damage by {buff}!\n")
+        elif (item == "i" or item == "I"):
+            cost = self.iconPrice
+            if (cost > player.coins):
+                print(f"\nYou can't afford this, you have {player.coins} coins, the cost is {cost}\n")
+                return
+            player.coins -= cost
+            newIcon = str(input("\nEnter new Map icon: "))
+            while (len(newIcon) > 1):
+                print("That is too long for an icon, only enter one character.")
+                newIcon = str(input("Enter new Map icon: "))
+            player.icon = newIcon
 
 
 shop = shop(4, 2)
@@ -641,7 +655,7 @@ def help() -> None:
     print("Map Tips:\n")
     print("Use (m) to view the map,")
     print("When you encounter important places or things, your map will update their location,")
-    print('You are represented by the "@" symbol on the map,')
+    print(f'You are represented by the "{player.icon}" symbol on the map,')
     print('The store is represented by the "$" symbol,')
     print('Treasure is represented by the "=" symbol,')
     print('Game Mechanics are represented by the "#" symbol.\n')
