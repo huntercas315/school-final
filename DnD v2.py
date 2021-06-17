@@ -705,7 +705,7 @@ def encounterMechanic() -> None:
         if (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
             combat.fight()
-            if (player.XY != mechanic.XY and player.XY != mechanic.XY):
+            if (player.XY != mechanic.XY and player.XY != mechanic2.XY):
                 break
         elif (action == "heal" or action == "HEAL"):
             player.heal()
