@@ -1,6 +1,5 @@
 import math
 from random import randrange
-from typing import List
 
 quitCheck = False
 
@@ -176,9 +175,10 @@ mechanic2 = mechanicStats("#", 7, 0, 3)
 
 class comments:
     __slots__ = [
-        "wallComments",
-        "moveComments",
-        "fightComments"]
+                "wallComments",
+                "moveComments",
+                "fightComments",
+                "lastComment"]
 
     def __init__(self):
         self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
@@ -203,14 +203,17 @@ class comments:
         self.fightComments = ["*bonk*", "*Bam*", "*Smack*", "*Bop*",
                               "*Bing Bong*", "Onomatopoeia!", "*Attack Noises!*",
                               "*Procedural Noise Generation!*"]
+        self.lastComment = ""
 
     def commentPrint(self, target: list) -> str:
-        length = len(target)
-        comment = target[randrange(length)]
+        comment = target[randrange(len(target))]
+        while (comment == self.lastComment):
+            comment = target[randrange(len(target))]
+        self.lastComment = comment
         return comment
 
 
-comment = comments()  # Make a settings menu to enable and disable maps and comments
+comment = comments()
 
 
 class compass:
@@ -284,6 +287,7 @@ class shop:
         "healsPrice",
         "upgrades",
         "upgradesPrice",
+        "iconPrice",
         "selections"]
 
     def __init__(self, heals: int, upgrades: int):
@@ -292,10 +296,11 @@ class shop:
         self.healsPrice = 50
         self.upgrades = upgrades
         self.upgradesPrice = 125
-        self.selections = ["done", "DONE", "h", "H", "u", "U"]
+        self.iconPrice = 100
+        self.selections = ["done", "DONE", "h", "H", "u", "U", "i", "I"]
 
     def startStore(self) -> None:
-        enter = input("\n\nYou have found the shop, enter? (y)/(n): ")
+        enter = input("\nYou have found the shop, enter? (y)/(n): ")
         if (enter == "y" or enter == "Y"):
             self.openStore()
         else:
@@ -307,6 +312,7 @@ class shop:
         print("Shop:")
         print(f"    (h)ealing items | {self.healsPrice} COINS  | Stock: {self.heals}")
         print(f"    (u)pgrades      | {self.upgradesPrice} COINS | Stock: {self.upgrades}")
+        print(f"    (i)con change   | {self.iconPrice} COINS | Stock: Theoretically Infinite")
         print()
         print("    (done)")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -355,6 +361,17 @@ class shop:
                 buff = randrange(1, 2)
                 player.attackBuff += buff
                 print(f"\nYou have buffed your damage by {buff}!\n")
+        elif (item == "i" or item == "I"):
+            cost = self.iconPrice
+            if (cost > player.coins):
+                print(f"\nYou can't afford this, you have {player.coins} coins, the cost is {cost}\n")
+                return
+            player.coins -= cost
+            newIcon = str(input("\nEnter new Map icon: "))
+            while (len(newIcon) > 1):
+                print("That is too long for an icon, only enter one character.")
+                newIcon = str(input("Enter new Map icon: "))
+            player.icon = newIcon
 
 
 shop = shop(4, 2)
@@ -641,7 +658,7 @@ def help() -> None:
     print("Map Tips:\n")
     print("Use (m) to view the map,")
     print("When you encounter important places or things, your map will update their location,")
-    print('You are represented by the "@" symbol on the map,')
+    print(f'You are represented by the "{player.icon}" symbol on the map,')
     print('The store is represented by the "$" symbol,')
     print('Treasure is represented by the "=" symbol,')
     print('Game Mechanics are represented by the "#" symbol.\n')
@@ -667,14 +684,14 @@ def help() -> None:
 def showCoords() -> None:  # Informs the player of their location after movement
     if encounterCheckBool():  # Checks if the player is at an encounter and whether to continue the function
         return
-    if options.showMap:  # shows the map if enabled
+    if options.showMap:  # Shows the map if enabled
         maps.drawMap()
     else:
         print()
 
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.")
 
-    if options.showComments:  # shows a wee message if enabled
+    if options.showComments:  # shows a message if enabled
         print(comment.commentPrint(comment.moveComments))
     print()
 
@@ -696,7 +713,8 @@ def encounterCheck() -> None:  # Triggers events
         encounterTreasure()
 
 
-def encounterCheckBool() -> bool:  # This is for disabling displaying coords and the map
+def encounterCheckBool() -> bool:
+    # This is for disabling displaying coords and the map if in an encounter
     if (player.XY == mechanic.XY):
         return True
     elif (player.XY == mechanic2.XY):
@@ -706,7 +724,7 @@ def encounterCheckBool() -> bool:  # This is for disabling displaying coords and
     else:
         return False
 
-
+# This part makes sure the objects don't overlap
 mechanic.XY = coordCheck(mechanic.XY)
 mechanic2.XY = coordCheck(mechanic2.XY)
 treasure.XY = coordCheck(treasure.XY)
@@ -715,12 +733,12 @@ treasure.XY = coordCheck(treasure.XY)
 
 welcomePrints()
 while True:
-    # The exit/quit part
+    # The exit/quit checking part
     if quitCheck:
         break
     # Checks for encounters
     encounterCheck()
-    # Another exit/quit part
+    # Another exit/quit checking part
     if quitCheck:
         break
     # The general movement part
