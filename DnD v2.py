@@ -32,38 +32,46 @@ class helpTips:
                 break
 
     def movementPage(self) -> None:
-        print("\nMovement Instructions:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Movement Instructions:\n")
         print("Use (w),(a),(s),(d) to move North, West, South, and East,")
         print("Use (h) to view your health,")
         print("Use (heal) to use a healing item to gain health,")
         print("Use (c) to use the compass and find nearby objects,")
-        print("Use (stats) to view your stats.\n")
+        print("Use (stats) to view your stats.")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add general move() instructions above
         
     def mapPage(self) -> None:
-        print("\nMap Tips:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Map Tips:\n")
         print("Use (m) to view the map outside of an encounter,")
         print("When you encounter important places or things, your map will update their location,")
         print(f'You are represented by the "{player.icon}" symbol on the map,')
         print('The store is represented by the "$" symbol,')
         print('Treasure is represented by the "=" symbol,')
-        print('Game Mechanics are represented by the "#" symbol.\n')
+        print('Game Mechanics are represented by the "#" symbol.')
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add map instructions above
         
     def encounterPage(self) -> None:
-        print("\nEncounter Instructions:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Encounter Instructions:\n")
         print("Use (f) to fight an encountered Game Mechanic,")
         print("Use (heal) to use a healing item to gain health,")
         print("Use (r) to run and use the general movement controls,")
-        print("Use (o) to open treasure chests.\n")
+        print("Use (o) to open treasure chests.")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add encounter() instructions above
         
     def shopPage(self) -> None:
-        print("\nShop Instructions:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Shop Instructions:\n")
         print("When at a shop, enter the item you would like to purchase,")
         print("If you have enough gold, you will be able to buy items for healing or upgrading yourself,")
         print("Enter (done) to finish your shopping,")
-        print("Get more coins from treasure chests and Game Mechanics.\n")
+        print("Get more coins from treasure chests and Game Mechanics.")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add shop instructions above
 
 helpTips = helpTips()
@@ -692,27 +700,20 @@ def encounterTreasure() -> None:
 
 def encounterMechanic() -> None:
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
-    action = "f"
     while True:
         action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
-        print()
-        while (action == "f" or action == "F"):
+        if (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
             combat.fight()
-            if (player.XY != mechanic.XY):
-                break
-            action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
-        if (action == "heal" or action == "HEAL"):
-            player.heal()
-        else:
-            if (action == "f" or action == "F"):
-                if (player.XY == mechanic.XY and player.XY == mechanic2.XY):
-                    continue
             if (player.XY != mechanic.XY and player.XY != mechanic2.XY):
                 break
-            else:
-                print("\nYou scamper, giving the Flash a run for his money...\n")
-                break
+        elif (action == "heal" or action == "HEAL"):
+            player.heal()
+        elif (action == "r" or action == "R"):
+            print("\nYou scamper, giving the Flash a run for his money...\n")
+            break
+        else:
+            action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
 
 def coordCheck(XY: list) -> list:
     while (mechanic.XY is mechanic2.XY):
@@ -736,7 +737,7 @@ def showCoords() -> None:  # Informs the player of their location after movement
 
 def welcomePrints() -> None:
     print("Welcome to [insert generic game name]\n")
-    showCoords()
+    print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.\n")
 
 
 def encounterCheck() -> None:  # Triggers events
