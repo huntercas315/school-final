@@ -1,6 +1,5 @@
 import math
 from random import randrange
-from typing import List
 
 quitCheck = False
 
@@ -685,14 +684,14 @@ def help() -> None:
 def showCoords() -> None:  # Informs the player of their location after movement
     if encounterCheckBool():  # Checks if the player is at an encounter and whether to continue the function
         return
-    if options.showMap:  # shows the map if enabled
+    if options.showMap:  # Shows the map if enabled
         maps.drawMap()
     else:
         print()
 
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.")
 
-    if options.showComments:  # shows a wee message if enabled
+    if options.showComments:  # shows a message if enabled
         print(comment.commentPrint(comment.moveComments))
     print()
 
@@ -714,7 +713,8 @@ def encounterCheck() -> None:  # Triggers events
         encounterTreasure()
 
 
-def encounterCheckBool() -> bool:  # This is for disabling displaying coords and the map
+def encounterCheckBool() -> bool:
+    # This is for disabling displaying coords and the map if in an encounter
     if (player.XY == mechanic.XY):
         return True
     elif (player.XY == mechanic2.XY):
@@ -724,7 +724,7 @@ def encounterCheckBool() -> bool:  # This is for disabling displaying coords and
     else:
         return False
 
-
+# This part makes sure the objects don't overlap
 mechanic.XY = coordCheck(mechanic.XY)
 mechanic2.XY = coordCheck(mechanic2.XY)
 treasure.XY = coordCheck(treasure.XY)
@@ -733,12 +733,12 @@ treasure.XY = coordCheck(treasure.XY)
 
 welcomePrints()
 while True:
-    # The exit/quit part
+    # The exit/quit checking part
     if quitCheck:
         break
     # Checks for encounters
     encounterCheck()
-    # Another exit/quit part
+    # Another exit/quit checking part
     if quitCheck:
         break
     # The general movement part
