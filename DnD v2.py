@@ -153,7 +153,7 @@ class stats: # This is the player's stats
             target = 0
         return target
 
-    def died(self): # This resets the player
+    def died(self) -> None: # This resets the player
         self.XY = [randrange(10) + 1, randrange(10) + 1]
         self.health = self.originHealth
         self.maxHealth = self.originHealth
@@ -161,7 +161,7 @@ class stats: # This is the player's stats
         self.heals = 0
         self.coins = 0
 
-    def upgrade(self): # This upgrades a stat for the player
+    def upgrade(self) -> None: # This upgrades a stat for the player
         option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
         while (option != "h" and option != "H" and option != "d" and option != "D"):
             option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
@@ -174,7 +174,7 @@ class stats: # This is the player's stats
             self.attackBuff += buff
             print(f"\nYou have found an item that buffed your damage by {buff}!\n")
 
-    def heal(self): # This uses a healing item to heal the player's health value
+    def heal(self) -> None: # This uses a healing item to heal the player's health value
         if (self.heals > 0):
             self.heals -= 1
             self.health += 3
