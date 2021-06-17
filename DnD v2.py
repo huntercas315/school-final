@@ -170,8 +170,8 @@ class mechanicStats:
         maps.mechanic = [-1, -1]
 
 
-mechanic = mechanicStats("!", 5, 1, 2)
-mechanic2 = mechanicStats("!", 7, 0, 3)
+mechanic = mechanicStats("#", 5, 1, 2)
+mechanic2 = mechanicStats("#", 7, 0, 3)
 
 
 class comments:
@@ -462,9 +462,11 @@ class combat:
     def healthFinder(self, target: str) -> int:
         if (target == "mechanic"):
             self.whichMechanic = "mechanic"
+            maps.addLocation("mechanic")
             return mechanic.health
         elif (target == "mechanic2"):
             self.whichMechanic = "mechanic2"
+            maps.addLocation("mechanic2")
             return mechanic2.health
 
     def healthSetter(self, targetHealth: int) -> None:
@@ -600,8 +602,7 @@ def encounterTreasure() -> None:
         player.XY = move(player.XY)
 
 
-def encounterMechanic() -> None:  # TODO: NEEDS REFACTOR - or does? - ...does...
-    maps.addLocation("mechanic")
+def encounterMechanic() -> None:
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
     while True:
@@ -633,21 +634,28 @@ def help() -> None:
     print("Use (h) to view your health,")
     print("Use (heal) to use a healing item to gain health,")
     print("Use (c) to use the compass and find nearby objects,")
+    print("Use (stats) to view your stats.\n")
+    # Add general move() instructions above
+    print("Map Tips:\n")
     print("Use (m) to view the map,")
-    print("Use (stats) to view stats.\n")
-    # add general move() instructions above
+    print("When you encounter important places or things, your map will update their location,")
+    print('You are represented by the "@" symbol on the map,')
+    print('The store is represented by the "$" symbol,')
+    print('Treasure is represented by the "=" symbol,')
+    print('Game Mechanics are represented by the "#" symbol.\n')
+    # Add map instructions above
     print("Encounter Instructions:\n")
     print("Use (f) to fight an encountered Game Mechanic,")
     print("Use (heal) to use a healing item to gain health,")
     print("Use (r) to run and use the general movement controls,")
     print("Use (o) to open treasure chests.\n")
-    # add encounter() instructions above
-    print("Shop Instructions:")
+    # Add encounter() instructions above
+    print("Shop Instructions:\n")
     print("When at a shop, enter the item you would like to purchase,")
     print("If you have enough gold, you will be able to buy items for healing or upgrading yourself,")
     print("Enter (done) to finish your shopping,")
     print("Get more coins from treasure chests and Game Mechanics.\n")
-    # add shop instructions above
+    # Add shop instructions above
     print("Use (options) to open the options menu,")
     print("Use (help) to access these tips,")
     print("Use (exit) to exit the game.")
