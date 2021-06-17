@@ -2,6 +2,7 @@ import math
 from random import randrange
 
 quitCheck = False # This variable is what triggers quitting the game
+beta = False # This disables the beta cheats
 
 
 class helpTips:
@@ -644,26 +645,28 @@ def move(XY: list) -> list: # Takes inputs for general movement throughout the g
         global quitCheck
         quitCheck = True
         return XY
-    ###########
-    elif (direction == "beta"):  # TODO: BETA STUFF - REMOVE LATER
-        ##### Beta stuff
-        print(treasure.XY)
-        print(mechanic.XY)
-        #####
+    ########### BETA AREA ###########
+    elif (direction == "beta"):  
+        if beta:
+            print(treasure.XY)
+            print(mechanic.XY)
         return XY
     elif (direction == "beta2"):
-        player.coins += 250
+        if beta:
+            player.coins += 250
         return XY
     elif (direction == "beta3"):
-        player.upgrade()
+        if beta:
+            player.upgrade()
         return XY
     elif (direction == "beta4"):
-        maps.addLocation("mechanic")
-        maps.addLocation("mechanic2")
-        maps.addLocation("treasure")
-        maps.addLocation("shop")
+        if beta:
+            maps.addLocation("mechanic")
+            maps.addLocation("mechanic2")
+            maps.addLocation("treasure")
+            maps.addLocation("shop")
         return XY
-    ##########
+    ########### BETA AREA ###########
     else:
         helpTips.helpOpening()
         return XY
