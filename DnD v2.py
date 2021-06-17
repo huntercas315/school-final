@@ -229,7 +229,7 @@ class compass:
         if (distMechanic < distance):
             point = mechanic.XY
             distance = distMechanic
-        distMechanic2 = self.distFinder(mechanic2.XY) # TODO: Make sure this functions
+        distMechanic2 = self.distFinder(mechanic2.XY)
         if (distMechanic2 < distance):
             point = mechanic2.XY
             distance = distMechanic2
@@ -375,7 +375,7 @@ class mapStuff:
         self.mechanic2 = [-1,-1]
         self.treasure = [-1, -1]
 
-    def drawMap(self) -> None: #TODO: check second mechanic functionality
+    def drawMap(self) -> None:
         self.digits = []
         self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         for i in range(11):
@@ -433,7 +433,7 @@ class combat:
     def __init__(self):
         self.whichMechanic = "mechanic"
 
-    def fight(self, target: str) -> None:  # TODO: NEEDS REFACTOR - MAYBE
+    def fight(self, target: str) -> None:
         targetHealth = self.healthFinder(target)
         # Player Attack
         targetHealth = player.attack(targetHealth)
@@ -621,7 +621,9 @@ def encounterMechanic() -> None:
             break
 
 
-def coordCheck(XY: list) -> list:  # TODO: Try to add more to prevent objects from overlapping
+def coordCheck(XY: list) -> list:
+    while (mechanic.XY is mechanic2.XY):
+        mechanic.XY = [randrange(10) + 1, randrange(10) + 1]
     while (XY == player.XY or XY == shop.location):
         XY = [randrange(10) + 1, randrange(10) + 1]
     return XY
