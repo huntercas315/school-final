@@ -250,7 +250,8 @@ class comments:
                             "A large wall blocks your path...",
                             "You seem to have encountered some lazy world design. You cannot continue in this direction, because of totally valid reasons.",
                             "A tiny ledge is in your path. You could jump over it, but this world is 2d. Turn back 2d person...",
-                            "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
+                            "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall...",
+                             "Leaving so soon? I think not..."]
 
         self.moveComments = ["You have wandered into a desert.",
                              "A potato field surrounds you.",
