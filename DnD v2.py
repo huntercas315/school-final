@@ -295,8 +295,8 @@ class shop:
         self.heals = heals
         self.healsPrice = 50
         self.upgrades = upgrades
-        self.upgradesPrice = 125
-        self.iconPrice = 100
+        self.upgradesPrice = 175
+        self.iconPrice = 200
         self.selections = ["done", "DONE", "h", "H", "u", "U", "i", "I"]
 
     def startStore(self) -> None:
@@ -450,7 +450,8 @@ class combat:
     def __init__(self):
         self.whichMechanic = "mechanic"
 
-    def fight(self, target: str) -> None:
+    def fight(self) -> None:
+        target = self.targetFinder()
         targetHealth = self.healthFinder(target)
         # Player Attack
         targetHealth = player.attack(targetHealth)
@@ -476,6 +477,12 @@ class combat:
             print("\n\n\n...You Died...\n\n\n")
             player.died()
 
+    def targetFinder(self) -> str:
+        if (player.XY == mechanic.XY):
+            return "mechanic"
+        elif (player.XY == mechanic2.XY):
+            return "mechanic2"
+    
     def healthFinder(self, target: str) -> int:
         if (target == "mechanic"):
             self.whichMechanic = "mechanic"
@@ -625,17 +632,23 @@ def encounterMechanic() -> None:
     while True:
         action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
         print()
-        if (action == "f" or action == "F"):
+        while (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
-            combat.fight("mechanic")
+            combat.fight()
             if (player.XY != mechanic.XY):
                 break
-        elif (action == "heal" or action == "HEAL"):
+            action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
+        if (action == "heal" or action == "HEAL"):
             player.heal()
         else:
-            print("\nYou scamper, giving the Flash a run for his money...\n")
-            player.XY = move(player.XY)
-            break
+            if (action == "f" or action == "F"):
+                if (player.XY == mechanic.XY and player.XY == mechanic2.XY):
+                    continue
+            if (player.XY != mechanic.XY and player.XY != mechanic2.XY):
+                break
+            else:
+                print("\nYou scamper, giving the Flash a run for his money...\n")
+                break
 
 
 def coordCheck(XY: list) -> list:
