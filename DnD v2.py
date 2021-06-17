@@ -188,7 +188,7 @@ class comments:
                             "A low wall is blocking you from continuing, but you skipped leg day, and as such cannot jump the wall..."]
 
         self.moveComments = ["You have wandered into a desert.",
-                             "A potato field surounds you.",
+                             "A potato field surrounds you.",
                              "An abandoned city looms before you, silent and empty.",
                              "You have chanced upon an incredibly beautiful field, if only graphics were implemented...",
                              "You have stepped into an apple orchard.",
@@ -202,7 +202,7 @@ class comments:
 
         self.fightComments = ["*bonk*", "*Bam*", "*Smack*", "*Bop*",
                               "*Bing Bong*", "Onomatopoeia!", "*Attack Noises!*",
-                              "*Procedural Noise Generation!*"]
+                              "*Procedural Noise Generation!*", "*Kerplunk*", "*Splat*", "*Kaboom!*"]
         self.lastComment = ""
 
     def commentPrint(self, target: list) -> str:
