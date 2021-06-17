@@ -32,38 +32,46 @@ class helpTips:
                 break
 
     def movementPage(self) -> None:
-        print("\nMovement Instructions:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Movement Instructions:\n")
         print("Use (w),(a),(s),(d) to move North, West, South, and East,")
         print("Use (h) to view your health,")
         print("Use (heal) to use a healing item to gain health,")
         print("Use (c) to use the compass and find nearby objects,")
-        print("Use (stats) to view your stats.\n")
+        print("Use (stats) to view your stats.")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add general move() instructions above
         
     def mapPage(self) -> None:
-        print("\nMap Tips:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Map Tips:\n")
         print("Use (m) to view the map outside of an encounter,")
         print("When you encounter important places or things, your map will update their location,")
         print(f'You are represented by the "{player.icon}" symbol on the map,')
         print('The store is represented by the "$" symbol,')
         print('Treasure is represented by the "=" symbol,')
-        print('Game Mechanics are represented by the "#" symbol.\n')
+        print('Game Mechanics are represented by the "#" symbol.')
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add map instructions above
         
     def encounterPage(self) -> None:
-        print("\nEncounter Instructions:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Encounter Instructions:\n")
         print("Use (f) to fight an encountered Game Mechanic,")
         print("Use (heal) to use a healing item to gain health,")
         print("Use (r) to run and use the general movement controls,")
-        print("Use (o) to open treasure chests.\n")
+        print("Use (o) to open treasure chests.")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add encounter() instructions above
         
     def shopPage(self) -> None:
-        print("\nShop Instructions:\n")
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Shop Instructions:\n")
         print("When at a shop, enter the item you would like to purchase,")
         print("If you have enough gold, you will be able to buy items for healing or upgrading yourself,")
         print("Enter (done) to finish your shopping,")
-        print("Get more coins from treasure chests and Game Mechanics.\n")
+        print("Get more coins from treasure chests and Game Mechanics.")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # Add shop instructions above
 
 helpTips = helpTips()
@@ -736,7 +744,7 @@ def showCoords() -> None:  # Informs the player of their location after movement
 
 def welcomePrints() -> None:
     print("Welcome to [insert generic game name]\n")
-    showCoords()
+    print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.\n")
 
 
 def encounterCheck() -> None:  # Triggers events
