@@ -81,7 +81,7 @@ helpTips = helpTips()
 class options: 
     __slots__ = [
         "showMap",
-        "showComments"]
+        "showComments"] # This changes the storage of class variable from a dictionary to a list and improves memory and speed
 
     def __init__(self, maps: bool, comments: bool):
         self.showMap = maps
