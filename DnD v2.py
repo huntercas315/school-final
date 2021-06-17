@@ -716,8 +716,6 @@ def encounterMechanic() -> None: # Runs the "Game Mechanic" encounter
         elif (action == "r" or action == "R"): # Exits the encounter
             print("\nYou scamper, giving the Flash a run for his money...\n")
             break
-        else:
-            action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
 
 def coordCheck(XY: list) -> list: # Prevents object overlaps
     while (mechanic.XY is mechanic2.XY):
