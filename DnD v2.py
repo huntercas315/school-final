@@ -486,11 +486,9 @@ class combat:
     def healthFinder(self, target: str) -> int:
         if (target == "mechanic"):
             self.whichMechanic = "mechanic"
-            maps.addLocation("mechanic")
             return mechanic.health
         elif (target == "mechanic2"):
             self.whichMechanic = "mechanic2"
-            maps.addLocation("mechanic2")
             return mechanic2.health
 
     def healthSetter(self, targetHealth: int) -> None:
@@ -719,8 +717,10 @@ def encounterCheck() -> None:  # Triggers events
         maps.addLocation("shop")
         shop.startStore()
     elif (player.XY == mechanic.XY):
+        maps.addLocation("mechanic")
         encounterMechanic()
     elif (player.XY == mechanic2.XY):
+        maps.addLocation("mechanic2")
         encounterMechanic()
     elif (player.XY == treasure.XY):
         encounterTreasure()
