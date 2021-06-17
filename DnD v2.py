@@ -365,15 +365,17 @@ class mapStuff:
         "digits",
         "shop",
         "mechanic",
+        "mechanic2",
         "treasure"]
 
     def __init__(self):
         self.digits = []
         self.shop = [-1, -1]
         self.mechanic = [-1, -1]
+        self.mechanic2 = [-1,-1]
         self.treasure = [-1, -1]
 
-    def drawMap(self) -> None: #TODO: add second mechanic to map
+    def drawMap(self) -> None: #TODO: check second mechanic functionality
         self.digits = []
         self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         for i in range(11):
@@ -387,6 +389,8 @@ class mapStuff:
                     digitTemp.append(f"[{treasure.icon}]")
                 elif (self.mechanic[1] == i and self.mechanic[0] == e):
                     digitTemp.append(f"[{mechanic.icon}]")
+                elif (self.mechanic2[1] == i and self.mechanic2[0] == e):
+                    digitTemp.append(f"[{mechanic2.icon}]")
                 else:
                     digitTemp.append("[_]")
             digitTemp.append("|")
@@ -408,6 +412,10 @@ class mapStuff:
             if (self.mechanic == [-1, -1]):
                 print("\nYour map has been updated\n")
                 self.mechanic = mechanic.XY
+        elif (location == "mechanic2"):
+            if (self.mechanic2 == [-1, -1]):
+                print("\nYour map has been updated\n")
+                self.mechanic2 = mechanic2.XY
         elif (location == "treasure"):
             if (self.treasure == [-1, -1]):
                 print("\nYour map has been updated\n")
@@ -420,20 +428,23 @@ maps = mapStuff()
 
 
 class combat:
-    __slots__ = []
+    __slots__ = ["whichMechanic"]
+
+    def __init__(self):
+        self.whichMechanic = "mechanic"
 
     def fight(self, target: str) -> None:  # TODO: NEEDS REFACTOR - MAYBE
         targetHealth = self.healthFinder(target)
         # Player Attack
         targetHealth = player.attack(targetHealth)
-        self.healthSetter(target, targetHealth)
+        self.healthSetter(targetHealth)
         print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
-        print(f"The Game Mechanic has {mechanic.health} health left.\n")
+        print(f"The Game Mechanic has {targetHealth} health left.\n")
         if (targetHealth == 0):
-            print("\n\n...The Game Mechanic has died...\n\n")
-            mechanic.died()
+            print("\n...The Game Mechanic has died...\n")
+            self.mechanicDied()
             coinLoot = randrange(25, 75)
-            print(f"You have gained {coinLoot} coins!\n")
+            print(f"\nYou have gained {coinLoot} coins!\n")
             player.coins += coinLoot
             return
         # The waiting/timer part
@@ -441,7 +452,7 @@ class combat:
         while (timer != 0):
             timer -= 1
         # Game Mechanic Attack
-        mechanic.attack()
+        self.mechanicAttack()
         print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
         print(f"You have {player.health} health left.\n")
         if (player.health == 0):
@@ -450,17 +461,29 @@ class combat:
 
     def healthFinder(self, target: str) -> int:
         if (target == "mechanic"):
+            self.whichMechanic = "mechanic"
             return mechanic.health
         elif (target == "mechanic2"):
-            # return #TODO: finish this return statement
-            pass  # TODO: Add a second mechanic for this thing
+            self.whichMechanic = "mechanic2"
+            return mechanic2.health
 
-    def healthSetter(self, target: str, targetHealth: int) -> None:
-        if (target == "mechanic"):
+    def healthSetter(self, targetHealth: int) -> None:
+        if (self.whichMechanic == "mechanic"):
             mechanic.health = targetHealth
-        elif (target == "mechanic2"):
-            #TODO: Finish this statement
-            pass  # TODO: Add a second mechanic for this thing
+        elif (self.whichMechanic == "mechanic2"):
+            mechanic2.health = targetHealth
+
+    def mechanicAttack(self) -> None:
+        if (self.whichMechanic == "mechanic"):
+            mechanic.attack()
+        elif (self.whichMechanic == "mechanic2"):
+            mechanic2.attack()
+
+    def mechanicDied(self) -> None:
+        if (self.whichMechanic == "mechanic"):
+            mechanic.died()
+        elif (self.whichMechanic == "mechanic2"):
+            mechanic2.died()
 
 
 combat = combat()
@@ -537,6 +560,7 @@ def move(XY: list) -> list:
         return XY
     elif (direction == "beta4"):
         maps.addLocation("mechanic")
+        maps.addLocation("mechanic2")
         maps.addLocation("treasure")
         maps.addLocation("shop")
         return XY
@@ -576,7 +600,7 @@ def encounterTreasure() -> None:
         player.XY = move(player.XY)
 
 
-def encounterMechanic() -> None:  # TODO: NEEDS REFACTOR - or does?
+def encounterMechanic() -> None:  # TODO: NEEDS REFACTOR - or does? - ...does...
     maps.addLocation("mechanic")
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     action = "f"
@@ -623,6 +647,7 @@ def help() -> None:
     print("If you have enough gold, you will be able to buy items for healing or upgrading yourself,")
     print("Enter (done) to finish your shopping,")
     print("Get more coins from treasure chests and Game Mechanics.\n")
+    # add shop instructions above
     print("Use (options) to open the options menu,")
     print("Use (help) to access these tips,")
     print("Use (exit) to exit the game.")
@@ -655,12 +680,16 @@ def encounterCheck() -> None:  # Triggers events
         shop.startStore()
     elif (player.XY == mechanic.XY):
         encounterMechanic()
+    elif (player.XY == mechanic2.XY):
+        encounterMechanic()
     elif (player.XY == treasure.XY):
         encounterTreasure()
 
 
 def encounterCheckBool() -> bool:  # This is for disabling displaying coords and the map
     if (player.XY == mechanic.XY):
+        return True
+    elif (player.XY == mechanic2.XY):
         return True
     elif (player.XY == treasure.XY):
         return True
@@ -669,6 +698,7 @@ def encounterCheckBool() -> bool:  # This is for disabling displaying coords and
 
 
 mechanic.XY = coordCheck(mechanic.XY)
+mechanic2.XY = coordCheck(mechanic2.XY)
 treasure.XY = coordCheck(treasure.XY)
 
 # The Starting Parts
