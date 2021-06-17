@@ -176,9 +176,10 @@ mechanic2 = mechanicStats("#", 7, 0, 3)
 
 class comments:
     __slots__ = [
-        "wallComments",
-        "moveComments",
-        "fightComments"]
+                "wallComments",
+                "moveComments",
+                "fightComments",
+                "lastComment"]
 
     def __init__(self):
         self.wallComments = ["You have found a wall, it seems to be whispering something about 'Game Mechanics', how odd.",
@@ -203,14 +204,17 @@ class comments:
         self.fightComments = ["*bonk*", "*Bam*", "*Smack*", "*Bop*",
                               "*Bing Bong*", "Onomatopoeia!", "*Attack Noises!*",
                               "*Procedural Noise Generation!*"]
+        self.lastComment = ""
 
     def commentPrint(self, target: list) -> str:
-        length = len(target)
-        comment = target[randrange(length)]
+        comment = target[randrange(len(target))]
+        while (comment == self.lastComment):
+            comment = target[randrange(len(target))]
+        self.lastComment = comment
         return comment
 
 
-comment = comments()  # Make a settings menu to enable and disable maps and comments
+comment = comments()
 
 
 class compass:
