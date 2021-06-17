@@ -700,27 +700,20 @@ def encounterTreasure() -> None:
 
 def encounterMechanic() -> None:
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
-    action = "f"
     while True:
         action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
-        print()
-        while (action == "f" or action == "F"):
+        if (action == "f" or action == "F"):
             print("\nYou attack the Game Mechanic...\n")
             combat.fight()
-            if (player.XY != mechanic.XY):
+            if (player.XY != mechanic.XY and player.XY != mechanic.XY):
                 break
-            action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
-        if (action == "heal" or action == "HEAL"):
+        elif (action == "heal" or action == "HEAL"):
             player.heal()
+        elif (action == "r" or action == "R"):
+            print("\nYou scamper, giving the Flash a run for his money...\n")
+            break
         else:
-            if (action == "f" or action == "F"):
-                if (player.XY == mechanic.XY and player.XY == mechanic2.XY):
-                    continue
-            if (player.XY != mechanic.XY and player.XY != mechanic2.XY):
-                break
-            else:
-                print("\nYou scamper, giving the Flash a run for his money...\n")
-                break
+            action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
 
 def coordCheck(XY: list) -> list:
     while (mechanic.XY is mechanic2.XY):
