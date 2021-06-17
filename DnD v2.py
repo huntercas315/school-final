@@ -4,7 +4,7 @@ from random import randrange
 quitCheck = False
 
 
-class help:
+class helpTips:
     def helpOpening(self) -> None:
         print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Help And Intstructions:\n")
@@ -17,28 +17,57 @@ class help:
         print("Use (help) to access these tips,")
         print("Use (exit) to exit the game.")
         print("\n(done)")
-        page = str(input("Which Page: "))
-        pageSelection(page)
+        while True:
+            page = str(input("Which Page: "))
+            if (page == "m" or page == "M"):
+                self.movementPage()
+            elif (page == "map" or page == "MAP"):
+                self.mapPage()
+            elif (page == "e" or page == "E"):
+                self.encounterPage()
+            elif (page == "s" or page == "S"):
+                self.shopPage()
+            else:
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+                break
 
-    def pageSelection(self, page: str) -> None:
-        if (page == "m" or page == "M"):
-            pass
-        elif (page == "map" or page == "MAP"):
-            pass
-        elif (page == "e" or page == "E"):
-            pass
-        elif (page == "s" or page == "S"):
-            pass
-        else:
-            pass
     def movementPage(self) -> None:
-        pass
+        print("\nMovement Instructions:\n")
+        print("Use (w),(a),(s),(d) to move North, West, South, and East,")
+        print("Use (h) to view your health,")
+        print("Use (heal) to use a healing item to gain health,")
+        print("Use (c) to use the compass and find nearby objects,")
+        print("Use (stats) to view your stats.\n")
+        # Add general move() instructions above
+        
     def mapPage(self) -> None:
-        pass
+        print("\nMap Tips:\n")
+        print("Use (m) to view the map outside of an encounter,")
+        print("When you encounter important places or things, your map will update their location,")
+        print(f'You are represented by the "{player.icon}" symbol on the map,')
+        print('The store is represented by the "$" symbol,')
+        print('Treasure is represented by the "=" symbol,')
+        print('Game Mechanics are represented by the "#" symbol.\n')
+        # Add map instructions above
+        
     def encounterPage(self) -> None:
-        pass
+        print("\nEncounter Instructions:\n")
+        print("Use (f) to fight an encountered Game Mechanic,")
+        print("Use (heal) to use a healing item to gain health,")
+        print("Use (r) to run and use the general movement controls,")
+        print("Use (o) to open treasure chests.\n")
+        # Add encounter() instructions above
+        
     def shopPage(self) -> None:
-        pass
+        print("\nShop Instructions:\n")
+        print("When at a shop, enter the item you would like to purchase,")
+        print("If you have enough gold, you will be able to buy items for healing or upgrading yourself,")
+        print("Enter (done) to finish your shopping,")
+        print("Get more coins from treasure chests and Game Mechanics.\n")
+        # Add shop instructions above
+
+helpTips = helpTips()
+
 
 class options:
     __slots__ = [
@@ -584,7 +613,7 @@ def move(XY: list) -> list:
         print(f"\nHealth: {player.health}/{player.maxHealth}\n")
         return XY
     elif (direction == "help" or direction == "HELP"):
-        help()
+        helpTips.helpOpening()
         return XY
     elif (direction == "c" or direction == "C"):
         compass.compassAllFunc()
@@ -626,7 +655,7 @@ def move(XY: list) -> list:
         return XY
     ##########
     else:
-        help()
+        helpTips.helpOpening()
         return XY
 
 
@@ -684,49 +713,12 @@ def encounterMechanic() -> None:
                 print("\nYou scamper, giving the Flash a run for his money...\n")
                 break
 
-
 def coordCheck(XY: list) -> list:
     while (mechanic.XY is mechanic2.XY):
         mechanic.XY = [randrange(10) + 1, randrange(10) + 1]
     while (XY == player.XY or XY == shop.location):
         XY = [randrange(10) + 1, randrange(10) + 1]
     return XY
-
-
-def help() -> None:
-    print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print("Movement Instructions:\n")
-    print("Use (w),(a),(s),(d) to move North, West, South, and East,")
-    print("Use (h) to view your health,")
-    print("Use (heal) to use a healing item to gain health,")
-    print("Use (c) to use the compass and find nearby objects,")
-    print("Use (stats) to view your stats.\n")
-    # Add general move() instructions above
-    print("Map Tips:\n")
-    print("Use (m) to view the map outside of an encounter,")
-    print("When you encounter important places or things, your map will update their location,")
-    print(f'You are represented by the "{player.icon}" symbol on the map,')
-    print('The store is represented by the "$" symbol,')
-    print('Treasure is represented by the "=" symbol,')
-    print('Game Mechanics are represented by the "#" symbol.\n')
-    # Add map instructions above
-    print("Encounter Instructions:\n")
-    print("Use (f) to fight an encountered Game Mechanic,")
-    print("Use (heal) to use a healing item to gain health,")
-    print("Use (r) to run and use the general movement controls,")
-    print("Use (o) to open treasure chests.\n")
-    # Add encounter() instructions above
-    print("Shop Instructions:\n")
-    print("When at a shop, enter the item you would like to purchase,")
-    print("If you have enough gold, you will be able to buy items for healing or upgrading yourself,")
-    print("Enter (done) to finish your shopping,")
-    print("Get more coins from treasure chests and Game Mechanics.\n")
-    # Add shop instructions above
-    print("Use (options) to open the options menu,")
-    print("Use (help) to access these tips,")
-    print("Use (exit) to exit the game.")
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-
 
 def showCoords() -> None:  # Informs the player of their location after movement
     if encounterCheckBool():  # Checks if the player is at an encounter and whether to continue the function
@@ -735,9 +727,7 @@ def showCoords() -> None:  # Informs the player of their location after movement
         maps.drawMap()
     else:
         print()
-
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.")
-
     if options.showComments:  # shows a message if enabled
         print(comment.commentPrint(comment.moveComments))
     print()
