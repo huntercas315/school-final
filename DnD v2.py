@@ -1,11 +1,11 @@
 import math
 from random import randrange
 
-quitCheck = False
+quitCheck = False # This variable is what triggers quitting the game
 
 
 class helpTips:
-    def helpOpening(self) -> None:
+    def helpOpening(self) -> None: # Displays a help menu to the player
         print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Help And Intstructions:\n")
         print("(m)ovement Instructions")
@@ -17,7 +17,7 @@ class helpTips:
         print("Use (help) to access these tips,")
         print("Use (exit) to exit the game.")
         print("\n(done)")
-        while True:
+        while True: #Finds which page to display
             page = str(input("Which Page: "))
             if (page == "m" or page == "M"):
                 self.movementPage()
@@ -77,7 +77,7 @@ class helpTips:
 helpTips = helpTips()
 
 
-class options:
+class options: 
     __slots__ = [
         "showMap",
         "showComments"]
@@ -86,7 +86,7 @@ class options:
         self.showMap = maps
         self.showComments = comments
 
-    def optionsViewer(self) -> None:
+    def optionsViewer(self) -> None: # This creates an options page for the player to customize things
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Options:")
@@ -106,7 +106,7 @@ class options:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-    def toggle(self, option: bool) -> bool:
+    def toggle(self, option: bool) -> bool: #This function toggles bools
         if option:
             print("The option is now off.")
             return False
@@ -118,7 +118,7 @@ class options:
 options = options(False, True)
 
 
-class stats:
+class stats: # This is the player's stats
     __slots__ = [
         "icon",
         "health",
@@ -144,7 +144,7 @@ class stats:
         self.XY = [randrange(10) + 1, randrange(10) + 1]
         # XY[0] is X, XY[1] is Y
 
-    def attack(self, target) -> int:
+    def attack(self, target) -> int: # This calculates the amount to damage a health variable
         damage = randrange(self.attackMin, self.attackMax) + 1
         damage += self.attackBuff
         target -= damage
@@ -152,7 +152,7 @@ class stats:
             target = 0
         return target
 
-    def died(self):
+    def died(self): # This resets the player
         self.XY = [randrange(10) + 1, randrange(10) + 1]
         self.health = self.originHealth
         self.maxHealth = self.originHealth
@@ -160,7 +160,7 @@ class stats:
         self.heals = 0
         self.coins = 0
 
-    def upgrade(self):
+    def upgrade(self): # This upgrades a stat for the player
         option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
         while (option != "h" and option != "H" and option != "d" and option != "D"):
             option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
@@ -173,7 +173,7 @@ class stats:
             self.attackBuff += buff
             print(f"\nYou have found an item that buffed your damage by {buff}!\n")
 
-    def heal(self):
+    def heal(self): # This uses a healing item to heal the player's health value
         if (self.heals > 0):
             self.heals -= 1
             self.health += 3
@@ -184,7 +184,7 @@ class stats:
         else:
             print("\nYou have no healing items left.\n")
 
-    def statViewer(self) -> None:
+    def statViewer(self) -> None: # This displays most of the variables in this class as a stats page
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Stats:")
@@ -202,10 +202,10 @@ class stats:
 
 
 player = stats("@", 10, 0, 3, 2, 50)
-treasure = stats("=", 0, 0, 0, 0, 0)
+treasure = stats("=", 0, 0, 0, 0, 0) # The treasure chest recycles the stats class 
 
 
-class mechanicStats:
+class mechanicStats: # The "Game Mechanic" is mainly a copy of the stats class with some function differences
     __slots__ = [
         "icon",
         "health",
@@ -225,7 +225,7 @@ class mechanicStats:
         self.XY = [randrange(10) + 1, randrange(10) + 1]
         # XY[0] is X, XY[1] is Y
 
-    def attack(self) -> None:
+    def attack(self) -> None: # Only damages the player
         targetHealth = player.health
         damage = randrange(self.attackMin, self.attackMax) + 1
         damage += self.attackBuff
@@ -234,7 +234,7 @@ class mechanicStats:
             targetHealth = 0
         player.health = targetHealth
 
-    def died(self) -> None:
+    def died(self) -> None: # This will slowly upscale the difficulty of the enemies
         self.XY = [randrange(10) + 1, randrange(10) + 1]
         self.health = self.originHealth + 3
         self.originHealth = self.health
@@ -246,7 +246,7 @@ mechanic = mechanicStats("#", 5, 1, 2)
 mechanic2 = mechanicStats("#", 7, 0, 3)
 
 
-class comments:
+class comments: # This class prints messages to enhance the game environment
     __slots__ = [
                 "wallComments",
                 "moveComments",
@@ -273,13 +273,14 @@ class comments:
                              "You come across some peasants in a field, they seem to be arguing about the constitution.",
                              "A cave is within sight, but it is guarded by a rabbit and you have no holy handgrenades on hand...",
                              "A swallow flies on the horizon, carrying coconuts to distant non-tropical lands."]
+                            # A few Monty Python references may exist
 
         self.fightComments = ["*bonk*", "*Bam*", "*Smack*", "*Bop*",
                               "*Bing Bong*", "Onomatopoeia!", "*Attack Noises!*",
                               "*Procedural Noise Generation!*", "*Kerplunk*", "*Splat*", "*Kaboom!*"]
         self.lastComment = ""
 
-    def commentPrint(self, target: list) -> str:
+    def commentPrint(self, target: list) -> str: # Grabs a random comment from a list and outputs it
         comment = target[randrange(len(target))]
         while (comment == self.lastComment):
             comment = target[randrange(len(target))]
@@ -290,7 +291,7 @@ class comments:
 comment = comments()
 
 
-class compass:
+class compass: # Gives the nearest object's direction
     def compassAllFunc(self) -> None:
         closest = self.closestObject()
         if (self.distFinder(closest) > 5):
@@ -298,7 +299,7 @@ class compass:
             return
         self.compass(closest)
 
-    def closestObject(self) -> list:
+    def closestObject(self) -> list: # Returns the coordinates of the nearest object
         distance = 99999
         point = []
         # Finding distances
@@ -317,7 +318,7 @@ class compass:
         # Returning closest
         return point
 
-    def distFinder(self, target: list) -> float:
+    def distFinder(self, target: list) -> float: # Returns the distance of every object from the player
         global distanceList
         sideDist = lambda point, player: abs((player - point))
         a = sideDist(target[0], player.XY[0])
@@ -328,7 +329,7 @@ class compass:
         c = math.sqrt(c)
         return c
 
-    def compass(self, target: list) -> None:
+    def compass(self, target: list) -> None: # Chooses and outputs the correct cardinal directions
         if (player.XY == target):
             print("\nThe Compass is spinning, you have arrived. The destination is on your right...\n")
             return
@@ -354,7 +355,7 @@ class compass:
 compass = compass()
 
 
-class shop:
+class shop: # Gives the player the ability to restock healing items and other things
     __slots__ = [
         "location",
         "heals",
@@ -373,14 +374,14 @@ class shop:
         self.iconPrice = 200
         self.selections = ["done", "DONE", "h", "H", "u", "U", "i", "I"]
 
-    def startStore(self) -> None:
+    def startStore(self) -> None: # The enterance/main hall of the shop type of function
         enter = input("\nYou have found the shop, enter? (y)/(n): ")
         if (enter == "y" or enter == "Y"):
             self.openStore()
         else:
             return
 
-    def openStore(self) -> None:
+    def openStore(self) -> None: # Displays the shops wares
         print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Shop:")
@@ -403,7 +404,7 @@ class shop:
             else:
                 self.buy(choice)
 
-    def buy(self, item: str) -> None:
+    def buy(self, item: str) -> None: # Runs the transaction
         if (item == "h" or item == "H"):
             quantity = int(input("How many? "))
             while (quantity > self.heals or quantity < 0):
@@ -451,7 +452,7 @@ class shop:
 shop = shop(4, 2)
 
 
-class mapStuff:
+class mapStuff: # displays a map of the game
     __slots__ = [
         "digits",
         "shop",
@@ -459,14 +460,14 @@ class mapStuff:
         "mechanic2",
         "treasure"]
 
-    def __init__(self):
+    def __init__(self): 
         self.digits = []
         self.shop = [-1, -1]
         self.mechanic = [-1, -1]
         self.mechanic2 = [-1,-1]
         self.treasure = [-1, -1]
 
-    def drawMap(self) -> None:
+    def drawMap(self) -> None: # Assembles a list of strings of the map
         self.digits = []
         self.digits.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         for i in range(11):
@@ -494,7 +495,7 @@ class mapStuff:
                 lineString += u
             print(lineString)
 
-    def addLocation(self, location: str) -> None:
+    def addLocation(self, location: str) -> None: # Updates the map with newly discovered locations
         if (location == "shop"):
             if (self.shop == [-1, -1]):
                 print("\nYour map has been updated\n")
@@ -522,7 +523,7 @@ class combat:
     __slots__ = ["whichMechanic"]
 
     def __init__(self):
-        self.whichMechanic = "mechanic"
+        self.whichMechanic = "mechanic" # Helps remember which object to affect
 
     def fight(self) -> None:
         target = self.targetFinder()
@@ -532,32 +533,32 @@ class combat:
         self.healthSetter(targetHealth)
         print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
         print(f"The Game Mechanic has {targetHealth} health left.\n")
-        if (targetHealth == 0):
+        if (targetHealth == 0): # Checks if the "Game Mechanic" is dead
             print("\n...The Game Mechanic has died...\n")
             self.mechanicDied()
-            coinLoot = randrange(25, 75)
+            coinLoot = randrange(25, 75) # Rewards and encourages beating up random creatures
             print(f"\nYou have gained {coinLoot} coins!\n")
             player.coins += coinLoot
             return
         # The waiting/timer part
-        timer = 9999999
+        timer = 9999999 # Gives the slightest idea of a pause and exchange in combat
         while (timer != 0):
             timer -= 1
         # Game Mechanic Attack
         self.mechanicAttack()
         print(comment.commentPrint(comment.fightComments), "\n")  # Attack Comment
         print(f"You have {player.health} health left.\n")
-        if (player.health == 0):
+        if (player.health == 0): # Checks if the player is dead
             print("\n\n\n...You Died...\n\n\n")
             player.died()
 
-    def targetFinder(self) -> str:
+    def targetFinder(self) -> str: # Finds which object is being attacked
         if (player.XY == mechanic.XY):
             return "mechanic"
         elif (player.XY == mechanic2.XY):
             return "mechanic2"
     
-    def healthFinder(self, target: str) -> int:
+    def healthFinder(self, target: str) -> int: # Finds it's health
         if (target == "mechanic"):
             self.whichMechanic = "mechanic"
             return mechanic.health
@@ -565,19 +566,19 @@ class combat:
             self.whichMechanic = "mechanic2"
             return mechanic2.health
 
-    def healthSetter(self, targetHealth: int) -> None:
+    def healthSetter(self, targetHealth: int) -> None: # Updates the objects health
         if (self.whichMechanic == "mechanic"):
             mechanic.health = targetHealth
         elif (self.whichMechanic == "mechanic2"):
             mechanic2.health = targetHealth
 
-    def mechanicAttack(self) -> None:
+    def mechanicAttack(self) -> None: # Triggers the right object's attack function
         if (self.whichMechanic == "mechanic"):
             mechanic.attack()
         elif (self.whichMechanic == "mechanic2"):
             mechanic2.attack()
 
-    def mechanicDied(self) -> None:
+    def mechanicDied(self) -> None: # Triggers the right object's died function
         if (self.whichMechanic == "mechanic"):
             mechanic.died()
         elif (self.whichMechanic == "mechanic2"):
@@ -587,15 +588,15 @@ class combat:
 combat = combat()
 
 
-def move(XY: list) -> list:
+def move(XY: list) -> list: # Takes inputs for general movement throughout the game
     global showMap
     direction = str(input("What Action? Use (help) to view tips: "))
     if (direction == "w" or direction == "W"):
         temp = XY[1] + 1
-        temp = borderMechanic(temp)
+        temp = borderMechanic(temp) # Checks if you are out of bounds
         XY.pop(1)
         XY.insert(1, temp)
-        showCoords()
+        showCoords() # Displays the new location
         return XY
     elif (direction == "a" or direction == "A"):
         temp = XY[0] - 1
@@ -668,7 +669,7 @@ def move(XY: list) -> list:
         return XY
 
 
-def borderMechanic(XY: int) -> int:
+def borderMechanic(XY: int) -> int: # Checks if the player is out of bounds
     if (XY > 10):
         print("\n", comment.commentPrint(comment.wallComments), "\n")
         return XY - 1
@@ -679,15 +680,15 @@ def borderMechanic(XY: int) -> int:
         return XY
 
 
-def encounterTreasure() -> None:
-    maps.addLocation("treasure")
+def encounterTreasure() -> None: # Runs the encounter with a treasure chest
+    maps.addLocation("treasure") # Updates the map incase the player leaves it behind
     print("You have found a treasure chest\n")
     action = str(input("What will you do? (o)pen or (r)un: "))
-    if (action == "o" or action == "O"):
+    if (action == "o" or action == "O"): # Opens the chest and gives either coins or upgrades
         coinToss = randrange(1, 100)
-        if (coinToss in range(80, 100)):
+        if (coinToss in range(80, 100)): # A 20% chance of upgrades
             player.upgrade()
-        else:
+        else: # An 80% chance of coins
             coinTemp = randrange(50, 200)
             player.coins += coinTemp
             print(f"\nYou have found {coinTemp} coins!\n")
@@ -698,24 +699,24 @@ def encounterTreasure() -> None:
         player.XY = move(player.XY)
 
 
-def encounterMechanic() -> None:
+def encounterMechanic() -> None: # Runs the "Game Mechanic" encounter
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     while True:
-        action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
-        if (action == "f" or action == "F"):
+        action = str(input("What will you do? (f)ight, (heal) or (r)un: ")) # Takes an input for actions
+        if (action == "f" or action == "F"): # Triggers the combat functions from the combat class
             print("\nYou attack the Game Mechanic...\n")
             combat.fight()
-            if (player.XY != mechanic.XY and player.XY != mechanic2.XY):
+            if (player.XY != mechanic.XY and player.XY != mechanic2.XY): # If it is dead by the end of the combat functions, exit the encounter
                 break
-        elif (action == "heal" or action == "HEAL"):
+        elif (action == "heal" or action == "HEAL"): # Triggers healing
             player.heal()
-        elif (action == "r" or action == "R"):
+        elif (action == "r" or action == "R"): # Exits the encounter
             print("\nYou scamper, giving the Flash a run for his money...\n")
             break
         else:
             action = str(input("What will you do? (f)ight, (heal) or (r)un: "))
 
-def coordCheck(XY: list) -> list:
+def coordCheck(XY: list) -> list: # Prevents object overlaps
     while (mechanic.XY is mechanic2.XY):
         mechanic.XY = [randrange(10) + 1, randrange(10) + 1]
     while (XY == player.XY or XY == shop.location):
@@ -730,17 +731,17 @@ def showCoords() -> None:  # Informs the player of their location after movement
     else:
         print()
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.")
-    if options.showComments:  # shows a message if enabled
+    if options.showComments:  # Shows a message if enabled
         print(comment.commentPrint(comment.moveComments))
     print()
 
 
-def welcomePrints() -> None:
+def welcomePrints() -> None: # A title page
     print("Welcome to [insert generic game name]\n")
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.\n")
 
 
-def encounterCheck() -> None:  # Triggers events
+def encounterCheck() -> None:  # Triggers encounter functions
     if (player.XY == shop.location):
         maps.addLocation("shop")
         shop.startStore()
