@@ -674,6 +674,7 @@ def move(XY: list) -> list: # Takes inputs for general movement throughout the g
         return XY
     ########### BETA AREA ###########
     else:
+        print("\nHelp can be accessed by entering (help)!\n")
         return XY
 
 
