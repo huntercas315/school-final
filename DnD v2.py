@@ -420,7 +420,8 @@ class shop: # Gives the player the ability to restock healing items and other th
             player.coins -= cost
             player.heals += quantity
             self.heals -= quantity
-            print(f"\nYou now have {player.heals} healing items and {player.coins} coins left.\n")
+            print(f"\nYou now have {player.heals} healing items and {player.coins} coins left.")
+            print(f"There is now {self.heals} healing items left in stock.\n")
         elif (item == "u" or item == "U"):
             cost = self.upgradesPrice
             if (cost > player.coins):
@@ -434,11 +435,12 @@ class shop: # Gives the player the ability to restock healing items and other th
             if (option == "h" or option == "H"):
                 buff = randrange(2, 5)
                 player.maxHealth += buff
-                print(f"\nYou have increased your max health by {buff}!\n")
+                print(f"\nYou have increased your max health by {buff}!")
             elif (option == "d" or option == "D"):
                 buff = randrange(1, 2)
                 player.attackBuff += buff
-                print(f"\nYou have buffed your damage by {buff}!\n")
+                print(f"\nYou have buffed your damage by {buff}!")
+            print(f"There is now {self.upgrades} upgrades left in stock.\n")
         elif (item == "i" or item == "I"):
             cost = self.iconPrice
             if (cost > player.coins):
