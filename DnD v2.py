@@ -674,7 +674,6 @@ def move(XY: list) -> list: # Takes inputs for general movement throughout the g
         return XY
     ########### BETA AREA ###########
     else:
-        helpTips.helpOpening()
         return XY
 
 
