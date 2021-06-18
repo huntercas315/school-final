@@ -78,6 +78,7 @@ class helpTips:
 helpTips = helpTips()
 
 
+
 class options: 
     __slots__ = [
         "showMap",
@@ -107,7 +108,7 @@ class options:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-    def toggle(self, option: bool) -> bool: #This function toggles bools
+    def toggle(self, option: bool) -> bool: # This function toggles bools
         if option:
             print("The option is now off.")
             return False
@@ -115,8 +116,8 @@ class options:
             print("The option is now on.")
             return True
 
-
 options = options(False, True)
+
 
 
 class stats: # This is the player's stats
@@ -201,9 +202,9 @@ class stats: # This is the player's stats
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-
 player = stats("@", 10, 0, 3, 2, 50)
 treasure = stats("=", 0, 0, 0, 0, 0) # The treasure chest recycles the stats class 
+
 
 
 class mechanicStats: # The "Game Mechanic" is mainly a copy of the stats class with some function differences
@@ -240,11 +241,10 @@ class mechanicStats: # The "Game Mechanic" is mainly a copy of the stats class w
         self.health = self.originHealth + 3
         self.originHealth = self.health
         self.attackBuff += 1
-        maps.mechanic = [-1, -1]
-
 
 mechanic = mechanicStats("#", 5, 1, 2)
 mechanic2 = mechanicStats("#", 7, 0, 3)
+
 
 
 class comments: # This class prints messages to enhance the game environment
@@ -288,8 +288,8 @@ class comments: # This class prints messages to enhance the game environment
         self.lastComment = comment
         return comment
 
-
 comment = comments()
+
 
 
 class compass: # Gives the nearest object's direction
@@ -352,8 +352,8 @@ class compass: # Gives the nearest object's direction
         compass = yCompass + xCompass
         print(f"\nThe Compass is pointing {compass}.\n")
 
-
 compass = compass()
+
 
 
 class shop: # Gives the player the ability to restock healing items and other things
@@ -372,7 +372,7 @@ class shop: # Gives the player the ability to restock healing items and other th
         self.healsPrice = 50
         self.upgrades = upgrades
         self.upgradesPrice = 175
-        self.iconPrice = 200
+        self.iconPrice = 100
         self.selections = ["done", "DONE", "h", "H", "u", "U", "i", "I"]
 
     def startStore(self) -> None: # The enterance/main hall of the shop type of function
@@ -410,7 +410,7 @@ class shop: # Gives the player the ability to restock healing items and other th
             quantity = int(input("How many? "))
             while (quantity > self.heals or quantity < 0):
                 print("The shop does not have that much in stock.")
-                quantity = input("How many? ")
+                quantity = int(input("How many? "))
             if (quantity == 0):
                 return
             cost = self.healsPrice * quantity
@@ -419,24 +419,31 @@ class shop: # Gives the player the ability to restock healing items and other th
                 return
             player.coins -= cost
             player.heals += quantity
-            print(f"\nYou now have {player.heals} healing items and {player.coins} coins left.\n")
+            self.heals -= quantity
+            print(f"\nYou now have {player.heals} healing items and {player.coins} coins left.")
+            print(f"There is now {self.heals} healing items left in stock.\n")
         elif (item == "u" or item == "U"):
+            if (self.upgrades == 0):
+                print("\nThe shop is out of stock.\n")
+                return
             cost = self.upgradesPrice
             if (cost > player.coins):
                 print(f"\nYou can't afford this, you have {player.coins} coins, the cost is {cost}\n")
                 return
             player.coins -= cost
+            self.upgrades -= 1
             option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
             while (option != "h" and option != "H" and option != "d" and option != "D"):
                 option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
             if (option == "h" or option == "H"):
                 buff = randrange(2, 5)
                 player.maxHealth += buff
-                print(f"\nYou have increased your max health by {buff}!\n")
+                print(f"\nYou have increased your max health by {buff}!")
             elif (option == "d" or option == "D"):
                 buff = randrange(1, 2)
                 player.attackBuff += buff
-                print(f"\nYou have buffed your damage by {buff}!\n")
+                print(f"\nYou have buffed your damage by {buff}!")
+            print(f"There is now {self.upgrades} upgrades left in stock.\n")
         elif (item == "i" or item == "I"):
             cost = self.iconPrice
             if (cost > player.coins):
@@ -449,11 +456,11 @@ class shop: # Gives the player the ability to restock healing items and other th
                 newIcon = str(input("Enter new Map icon: "))
             player.icon = newIcon
 
+shop = shop(12, 4)
 
-shop = shop(4, 2)
 
 
-class mapStuff: # displays a map of the game
+class mapStuff: # Displays a map of the game
     __slots__ = [
         "digits",
         "shop",
@@ -516,8 +523,8 @@ class mapStuff: # displays a map of the game
         else:
             return
 
-
 maps = mapStuff()
+
 
 
 class combat:
@@ -582,11 +589,13 @@ class combat:
     def mechanicDied(self) -> None: # Triggers the right object's died function
         if (self.whichMechanic == "mechanic"):
             mechanic.died()
+            maps.mechanic = [-1,-1]
         elif (self.whichMechanic == "mechanic2"):
             mechanic2.died()
-
+            maps.mechanic2 = [-1,-1]
 
 combat = combat()
+
 
 
 def move(XY: list) -> list: # Takes inputs for general movement throughout the game
@@ -668,9 +677,8 @@ def move(XY: list) -> list: # Takes inputs for general movement throughout the g
         return XY
     ########### BETA AREA ###########
     else:
-        helpTips.helpOpening()
+        print("\nInstructions can be accessed by entering (help)!\n")
         return XY
-
 
 def borderMechanic(XY: int) -> int: # Checks if the player is out of bounds
     if (XY > 10):
@@ -681,7 +689,6 @@ def borderMechanic(XY: int) -> int: # Checks if the player is out of bounds
         return XY + 1
     else:
         return XY
-
 
 def encounterTreasure() -> None: # Runs the encounter with a treasure chest
     maps.addLocation("treasure") # Updates the map incase the player leaves it behind
@@ -701,7 +708,6 @@ def encounterTreasure() -> None: # Runs the encounter with a treasure chest
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
 
-
 def encounterMechanic() -> None: # Runs the "Game Mechanic" encounter
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
     while True:
@@ -720,6 +726,7 @@ def encounterMechanic() -> None: # Runs the "Game Mechanic" encounter
 def coordCheck(XY: list) -> list: # Prevents object overlaps
     while (mechanic.XY is mechanic2.XY):
         mechanic.XY = [randrange(10) + 1, randrange(10) + 1]
+        mechanic2.XY = [randrange(10) + 1, randrange(10) + 1]
     while (XY == player.XY or XY == shop.location):
         XY = [randrange(10) + 1, randrange(10) + 1]
     return XY
@@ -736,11 +743,9 @@ def showCoords() -> None:  # Informs the player of their location after movement
         print(comment.commentPrint(comment.moveComments))
     print()
 
-
 def welcomePrints() -> None: # A title page
     print("Welcome to [insert generic game name]\n")
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.\n")
-
 
 def encounterCheck() -> None:  # Triggers encounter functions
     if (player.XY == shop.location):
@@ -754,7 +759,6 @@ def encounterCheck() -> None:  # Triggers encounter functions
         encounterMechanic()
     elif (player.XY == treasure.XY):
         encounterTreasure()
-
 
 def encounterCheckBool() -> bool:
     # This is for disabling displaying coords and the map if in an encounter
