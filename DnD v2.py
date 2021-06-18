@@ -371,7 +371,7 @@ class shop: # Gives the player the ability to restock healing items and other th
         self.healsPrice = 50
         self.upgrades = upgrades
         self.upgradesPrice = 175
-        self.iconPrice = 200
+        self.iconPrice = 100
         self.selections = ["done", "DONE", "h", "H", "u", "U", "i", "I"]
 
     def startStore(self) -> None: # The enterance/main hall of the shop type of function
