@@ -2,7 +2,7 @@ import math
 from random import randrange
 
 quitCheck = False # This variable is what triggers quitting the game
-beta = False # This disables the beta cheats
+beta = True # This disables the beta cheats
 
 
 class helpTips:
@@ -422,6 +422,9 @@ class shop: # Gives the player the ability to restock healing items and other th
             print(f"\nYou now have {player.heals} healing items and {player.coins} coins left.")
             print(f"There is now {self.heals} healing items left in stock.\n")
         elif (item == "u" or item == "U"):
+            if (self.upgrades == 0):
+                print("\nThe shop is out of stock.\n")
+                return
             cost = self.upgradesPrice
             if (cost > player.coins):
                 print(f"\nYou can't afford this, you have {player.coins} coins, the cost is {cost}\n")
