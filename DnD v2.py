@@ -108,7 +108,7 @@ class options:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-    def toggle(self, option: bool) -> bool: #This function toggles bools
+    def toggle(self, option: bool) -> bool: # This function toggles bools
         if option:
             print("The option is now off.")
             return False
@@ -460,7 +460,7 @@ shop = shop(12, 4)
 
 
 
-class mapStuff: # displays a map of the game
+class mapStuff: # Displays a map of the game
     __slots__ = [
         "digits",
         "shop",
