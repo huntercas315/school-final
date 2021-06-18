@@ -2,7 +2,7 @@ import math
 from random import randrange
 
 quitCheck = False # This variable is what triggers quitting the game
-beta = True # This disables the beta cheats
+beta = False # This disables the beta cheats
 
 
 class helpTips:
