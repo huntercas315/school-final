@@ -409,7 +409,7 @@ class shop: # Gives the player the ability to restock healing items and other th
             quantity = int(input("How many? "))
             while (quantity > self.heals or quantity < 0):
                 print("The shop does not have that much in stock.")
-                quantity = input("How many? ")
+                quantity = int(input("How many? "))
             if (quantity == 0):
                 return
             cost = self.healsPrice * quantity
@@ -456,7 +456,7 @@ class shop: # Gives the player the ability to restock healing items and other th
             player.icon = newIcon
 
 
-shop = shop(8, 3)
+shop = shop(12, 4)
 
 
 class mapStuff: # displays a map of the game
