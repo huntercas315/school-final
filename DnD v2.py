@@ -728,6 +728,7 @@ def encounterMechanic() -> None: # Runs the "Game Mechanic" encounter
 def coordCheck(XY: list) -> list: # Prevents object overlaps
     while (mechanic.XY is mechanic2.XY):
         mechanic.XY = [randrange(10) + 1, randrange(10) + 1]
+        mechanic2.XY = [randrange(10) + 1, randrange(10) + 1]
     while (XY == player.XY or XY == shop.location):
         XY = [randrange(10) + 1, randrange(10) + 1]
     return XY
