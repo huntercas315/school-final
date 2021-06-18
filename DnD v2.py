@@ -240,7 +240,6 @@ class mechanicStats: # The "Game Mechanic" is mainly a copy of the stats class w
         self.health = self.originHealth + 3
         self.originHealth = self.health
         self.attackBuff += 1
-        maps.mechanic = [-1, -1]
 
 
 mechanic = mechanicStats("#", 5, 1, 2)
