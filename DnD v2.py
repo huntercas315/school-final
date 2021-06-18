@@ -78,6 +78,7 @@ class helpTips:
 helpTips = helpTips()
 
 
+
 class options: 
     __slots__ = [
         "showMap",
@@ -115,8 +116,8 @@ class options:
             print("The option is now on.")
             return True
 
-
 options = options(False, True)
+
 
 
 class stats: # This is the player's stats
@@ -201,9 +202,9 @@ class stats: # This is the player's stats
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print()
 
-
 player = stats("@", 10, 0, 3, 2, 50)
 treasure = stats("=", 0, 0, 0, 0, 0) # The treasure chest recycles the stats class 
+
 
 
 class mechanicStats: # The "Game Mechanic" is mainly a copy of the stats class with some function differences
@@ -241,9 +242,9 @@ class mechanicStats: # The "Game Mechanic" is mainly a copy of the stats class w
         self.originHealth = self.health
         self.attackBuff += 1
 
-
 mechanic = mechanicStats("#", 5, 1, 2)
 mechanic2 = mechanicStats("#", 7, 0, 3)
+
 
 
 class comments: # This class prints messages to enhance the game environment
@@ -287,8 +288,8 @@ class comments: # This class prints messages to enhance the game environment
         self.lastComment = comment
         return comment
 
-
 comment = comments()
+
 
 
 class compass: # Gives the nearest object's direction
@@ -351,8 +352,8 @@ class compass: # Gives the nearest object's direction
         compass = yCompass + xCompass
         print(f"\nThe Compass is pointing {compass}.\n")
 
-
 compass = compass()
+
 
 
 class shop: # Gives the player the ability to restock healing items and other things
@@ -455,8 +456,8 @@ class shop: # Gives the player the ability to restock healing items and other th
                 newIcon = str(input("Enter new Map icon: "))
             player.icon = newIcon
 
-
 shop = shop(12, 4)
+
 
 
 class mapStuff: # displays a map of the game
@@ -522,8 +523,8 @@ class mapStuff: # displays a map of the game
         else:
             return
 
-
 maps = mapStuff()
+
 
 
 class combat:
@@ -593,8 +594,8 @@ class combat:
             mechanic2.died()
             maps.mechanic2 = [-1,-1]
 
-
 combat = combat()
+
 
 
 def move(XY: list) -> list: # Takes inputs for general movement throughout the game
@@ -679,7 +680,6 @@ def move(XY: list) -> list: # Takes inputs for general movement throughout the g
         print("\nInstructions can be accessed by entering (help)!\n")
         return XY
 
-
 def borderMechanic(XY: int) -> int: # Checks if the player is out of bounds
     if (XY > 10):
         print("\n", comment.commentPrint(comment.wallComments), "\n")
@@ -689,7 +689,6 @@ def borderMechanic(XY: int) -> int: # Checks if the player is out of bounds
         return XY + 1
     else:
         return XY
-
 
 def encounterTreasure() -> None: # Runs the encounter with a treasure chest
     maps.addLocation("treasure") # Updates the map incase the player leaves it behind
@@ -708,7 +707,6 @@ def encounterTreasure() -> None: # Runs the encounter with a treasure chest
     else:
         print("\nYou skedaddle, leaving the treasure behind?\n")
         player.XY = move(player.XY)
-
 
 def encounterMechanic() -> None: # Runs the "Game Mechanic" encounter
     print("\nYou have found a wild 'Game Mechanic' in it's natural habitat, a game.")
@@ -745,11 +743,9 @@ def showCoords() -> None:  # Informs the player of their location after movement
         print(comment.commentPrint(comment.moveComments))
     print()
 
-
 def welcomePrints() -> None: # A title page
     print("Welcome to [insert generic game name]\n")
     print(f"You are at X: {player.XY[0]} and Y: {player.XY[1]}.\n")
-
 
 def encounterCheck() -> None:  # Triggers encounter functions
     if (player.XY == shop.location):
@@ -763,7 +759,6 @@ def encounterCheck() -> None:  # Triggers encounter functions
         encounterMechanic()
     elif (player.XY == treasure.XY):
         encounterTreasure()
-
 
 def encounterCheckBool() -> bool:
     # This is for disabling displaying coords and the map if in an encounter
