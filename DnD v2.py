@@ -419,6 +419,7 @@ class shop: # Gives the player the ability to restock healing items and other th
                 return
             player.coins -= cost
             player.heals += quantity
+            self.heals -= quantity
             print(f"\nYou now have {player.heals} healing items and {player.coins} coins left.\n")
         elif (item == "u" or item == "U"):
             cost = self.upgradesPrice
@@ -426,6 +427,7 @@ class shop: # Gives the player the ability to restock healing items and other th
                 print(f"\nYou can't afford this, you have {player.coins} coins, the cost is {cost}\n")
                 return
             player.coins -= cost
+            self.upgrades -= 1
             option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
             while (option != "h" and option != "H" and option != "d" and option != "D"):
                 option = input("\nWhat would you like to upgrade? (h)ealth or (d)amage: ")
@@ -450,7 +452,7 @@ class shop: # Gives the player the ability to restock healing items and other th
             player.icon = newIcon
 
 
-shop = shop(4, 2)
+shop = shop(8, 3)
 
 
 class mapStuff: # displays a map of the game
@@ -582,8 +584,10 @@ class combat:
     def mechanicDied(self) -> None: # Triggers the right object's died function
         if (self.whichMechanic == "mechanic"):
             mechanic.died()
+            maps.mechanic = [-1,-1]
         elif (self.whichMechanic == "mechanic2"):
             mechanic2.died()
+            maps.mechanic2 = [-1,-1]
 
 
 combat = combat()
